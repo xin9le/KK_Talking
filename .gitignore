@@ -60,6 +60,7 @@ BenchmarkDotNet.Artifacts/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+**/Properties/launchSettings.json
 
 # StyleCop
 StyleCopReport.xml
@@ -299,6 +300,10 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
+# JetBrains Rider
+.idea/
+*.sln.iml
+
 # CodeRush personal settings
 .cr/personal
 
@@ -348,3 +353,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Azure Functions localsettings file
+local.settings.json
