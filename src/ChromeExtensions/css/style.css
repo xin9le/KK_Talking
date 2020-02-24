@@ -1,0 +1,13 @@
+#kk_searchTabContent {
+    display: none;
+}
+
+
+.kk_searchBox {
+    text-align: center;
+}
+
+
+.kk_searchBox input {
+    width: 50%;
+}
