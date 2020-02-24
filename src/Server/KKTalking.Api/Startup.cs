@@ -1,0 +1,29 @@
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+[assembly: FunctionsStartup(typeof(KKTalking.Api.Startup))]
+
+
+
+namespace KKTalking.Api
+{
+    /// <summary>
+    /// アプリケーションの起動に関する初期化処理を提供します。
+    /// </summary>
+    internal class Startup : FunctionsStartup
+    {
+        /// <summary>
+        /// サービスを追加/構成します。
+        /// </summary>
+        /// <param name="builder"></param>
+        public override void Configure(IFunctionsHostBuilder builder)
+        {
+            var services = builder.Services;
+            //var config = services.AddConfiguration();
+            //var appSettings = config.Get<AppSettings>(o => o.BindNonPublicProperties = true);
+
+            //services.AddDomainServices(appSettings.Redis);
+        }
+    }
+}
