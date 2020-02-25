@@ -49,5 +49,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(configuration);
             return configuration;
         }
+
+
+        /// <summary>
+        /// ドメインサービスを DI に登録します。
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDomainServices(this IServiceCollection services)
+        {
+            return services.AddInstagram();
+        }
     }
 }
