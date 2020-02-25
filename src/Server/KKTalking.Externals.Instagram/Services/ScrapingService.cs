@@ -106,14 +106,14 @@ namespace KKTalking.Externals.Instagram.Services
                 {
                     //--- 連打防止のために気持ちちょっとだけ待つ
                     if (!heavyLoading)
-                        await Task.Delay(1000).ConfigureAwait(false);
+                        await Task.Delay(3000).ConfigureAwait(false);
 
                     //--- 読み込み
                     const string queryId = "e769aa130647d2354c40ea6a439bfc08";
                     var data = new
                     {
                         id = userId,
-                        first = 50,  // 最大 50 件っぽい
+                        first = 12,  // 最大 50 件っぽい
                         after = (string)pageInfo["end_cursor"],
                     };
                     var variables = JsonSerializer.ToJsonString(data);
