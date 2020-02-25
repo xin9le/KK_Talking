@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 
-namespace KKTalking.Externals.Instagram.Entities
+namespace KKTalking.Externals.Instagram.Models
 {
     /// <summary>
     /// アカウント情報を表します。

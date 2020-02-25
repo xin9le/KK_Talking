@@ -4,7 +4,7 @@ using System.Linq;
 
 
 
-namespace KKTalking.Externals.Instagram.Entities
+namespace KKTalking.Externals.Instagram.Models
 {
     /// <summary>
     /// 投稿情報を表します。

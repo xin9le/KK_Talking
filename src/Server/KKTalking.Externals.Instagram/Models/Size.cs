@@ -1,4 +1,4 @@
-﻿namespace KKTalking.Externals.Instagram.Entities
+﻿namespace KKTalking.Externals.Instagram.Models
 {
     /// <summary>
     /// サイズを表します。

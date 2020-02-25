@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using KKTalking.Externals.Instagram.Entities;
+using KKTalking.Externals.Instagram.Models;
 using KKTalking.Net.Http;
 using Utf8Json;
 
