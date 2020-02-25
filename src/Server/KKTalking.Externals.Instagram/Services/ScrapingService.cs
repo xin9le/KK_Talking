@@ -62,21 +62,25 @@ namespace KKTalking.Externals.Instagram.Services
         /// 軽量な投稿情報の一覧を抽出します。
         /// </summary>
         /// <param name="accountName"></param>
+        /// <param name="recursive">無限スクロール部分を再帰的に処理するかどうか</param>
         /// <returns></returns>
-        public async ValueTask<IReadOnlyList<PostSlim>> ExtractPostSlimsAsync(string accountName)
+        public async ValueTask<IReadOnlyList<PostSlim>> ExtractPostSlimsAsync(string accountName, bool recursive = false)
         {
             var user = await this.GetRawUserData(accountName).ConfigureAwait(false);
             var userId = (string)user["id"];
             dynamic timeline = user["edge_owner_to_timeline_media"];
-            var count = (int)timeline["count"];
+            var count
+                = recursive
+                ? (int)timeline["count"]
+                : ((List<dynamic>)timeline["edges"]).Count;
 
             var buffer = new List<PostSlim>(count);
             var heavyLoading = true;  // 連打を緩くする
-            await EnumerateAsync(this.HttpClient, buffer, userId, timeline, heavyLoading).ConfigureAwait(false);
+            await EnumerateAsync(this.HttpClient, buffer, userId, timeline, recursive, heavyLoading).ConfigureAwait(false);
             return buffer;
 
             #region ローカル関数
-            async static Task EnumerateAsync(HttpClient client, List<PostSlim> buffer, string userId, dynamic timeline, bool heavyLoading)
+            async static Task EnumerateAsync(HttpClient client, List<PostSlim> buffer, string userId, dynamic timeline, bool recursive, bool heavyLoading)
             {
                 //--- 要素を格納
                 var now = DateTimeOffset.UtcNow;
@@ -87,6 +91,10 @@ namespace KKTalking.Externals.Instagram.Services
                     var post = new PostSlim(node, now);
                     buffer.Add(post);
                 }
+
+                //--- 無限スクロールを再帰的に呼び出すかどうか
+                if (!recursive)
+                    return;
 
                 //--- 続きがあれば読み込む
                 var pageInfo = timeline["page_info"];
@@ -110,7 +118,7 @@ namespace KKTalking.Externals.Instagram.Services
                     var json = await client.GetStringAsync(url).ConfigureAwait(false);
                     var obj = JsonSerializer.Deserialize<dynamic>(json);
                     var next = obj["data"]["user"]["edge_owner_to_timeline_media"];
-                    await EnumerateAsync(client, buffer, userId, next, heavyLoading).ConfigureAwait(false);
+                    await EnumerateAsync(client, buffer, userId, next, recursive, heavyLoading).ConfigureAwait(false);
                 }
             }
             #endregion
