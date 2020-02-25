@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using KKTalking.Api.Domain.Search;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 
@@ -58,7 +60,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
-            return services.AddInstagram();
+            services.AddInstagram();
+            services.TryAddScoped<SearchService>();
+            return services;
         }
     }
 }
