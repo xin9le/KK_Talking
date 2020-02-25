@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using KKTalking.Externals.Instagram.Services;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 
@@ -17,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddInstagram(this IServiceCollection services)
         {
             services.AddHttpClient();
-            //services.TryAddScoped<ScrapingService>();
+            services.TryAddScoped<ScrapingService>();
             return services;
         }
     }
