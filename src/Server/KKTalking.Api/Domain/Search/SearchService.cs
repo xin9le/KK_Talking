@@ -1,6 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using KKTalking.Externals.Instagram.Services;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
+using Microsoft.Extensions.Configuration;
+using Utf8Json;
 
 
 
@@ -24,6 +28,12 @@ namespace KKTalking.Api.Domain.Search
         /// Instagram のスクレイピング機能を取得します。
         /// </summary>
         private ScrapingService ScrapingService { get; }
+
+
+        /// <summary>
+        /// Blob Storage へのアクセス機能を取得します。
+        /// </summary>
+        private CloudBlobClient BlobClient { get; }
         #endregion
 
 
@@ -32,8 +42,13 @@ namespace KKTalking.Api.Domain.Search
         /// インスタンスを生成します。
         /// </summary>
         /// <param name="scrapingService"></param>
-        public SearchService(ScrapingService scrapingService)
-            => this.ScrapingService = scrapingService;
+        /// <param name="configuration"></param>
+        public SearchService(ScrapingService scrapingService, IConfigurationRoot config)
+        {
+            this.ScrapingService = scrapingService;
+            var account = CloudStorageAccount.Parse(config["AzureWebJobsStorage"]);
+            this.BlobClient = account.CreateCloudBlobClient();
+        }   
         #endregion
 
 
@@ -44,10 +59,27 @@ namespace KKTalking.Api.Domain.Search
         /// <returns></returns>
         public async ValueTask BuildAsync(CancellationToken cancellationToken = default)
         {
+            //--- 取得
             const bool recursive = false;
             var posts = await this.ScrapingService.ExtractPostSlimsAsync(AccountName, recursive, cancellationToken).ConfigureAwait(false);
 
-            // todo: caption を parse
+            //--- キャプションを解析して Blob Storage にアップロード
+            var container = this.BlobClient.GetContainerReference("search-metadata");
+            foreach (var x in posts)
+            {
+                try
+                {
+                    var metadata = CaptionParser.Parse(x.Caption);
+                    var fileName = $"KK{metadata.Number}.json";
+                    var json = JsonSerializer.Serialize(metadata);
+                    var blob = container.GetBlockBlobReference(fileName);
+                    await blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    // エラーは一旦無視
+                }
+            }
         }
     }
 }
