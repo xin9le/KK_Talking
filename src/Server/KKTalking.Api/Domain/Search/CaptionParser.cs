@@ -190,7 +190,9 @@ namespace KKTalking.Api.Domain.Search
                     else if (this.CurrentLine.StartsWith("- "))
                     {
                         var splited = this.CurrentLine.TrimStart('-').Split('/');
-                        var pair = new TranslationPair(splited[0].Trim(), splited[1].Trim());
+                        var english = splited[0].Trim();
+                        var japanese = splited[1].Trim();
+                        var pair = new TranslationPair(english, japanese);
                         topics.Add(pair);
                     }
                     else
@@ -205,7 +207,9 @@ namespace KKTalking.Api.Domain.Search
                         if (previousLineIsTopicHeacer)
                         {
                             var splited = this.CurrentLine.Split('/');
-                            var pair = new TranslationPair(splited[0].Trim(), splited[1].Trim());
+                            var english = splited[0].Trim();
+                            var japanese = splited[1].Trim();
+                            var pair = new TranslationPair(english, japanese);
                             topics.Add(pair);
                         }                        
                     }
