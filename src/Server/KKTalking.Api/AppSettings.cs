@@ -11,7 +11,7 @@ namespace KKTalking.Api
     {
 #pragma warning disable CS8618
         /// <summary>
-        /// Azure Web Jobs が利用する Storage への接続文字列を取得します。
+        /// Azure WebJobs が利用する Storage への接続文字列を取得します。
         /// </summary>
         public string AzureWebJobsStorage { get; private set; }
 

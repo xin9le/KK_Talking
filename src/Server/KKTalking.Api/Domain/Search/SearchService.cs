@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 using KKTalking.Externals.Instagram.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
-using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using Microsoft.Extensions.Configuration;
 using Utf8Json;
 
 
@@ -52,13 +50,12 @@ namespace KKTalking.Api.Domain.Search
         /// インスタンスを生成します。
         /// </summary>
         /// <param name="scrapingService"></param>
-        /// <param name="configuration"></param>
-        /// <param name="config"></param>
-        public SearchService(ScrapingService scrapingService, IConfigurationRoot config, SearchServiceClient searchClient)
+        /// <param name="accountProvider"></param>
+        /// <param name="searchClient"></param>
+        public SearchService(ScrapingService scrapingService, StorageAccountProvider accountProvider, SearchServiceClient searchClient)
         {
             this.ScrapingService = scrapingService;
-            var account = CloudStorageAccount.Parse(config["AzureWebJobsStorage"]);
-            this.BlobClient = account.CreateCloudBlobClient();
+            this.BlobClient = accountProvider.AzureWebJobs.CreateCloudBlobClient();
             this.SearchClient = searchClient;
         }   
         #endregion

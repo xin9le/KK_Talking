@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using KKTalking.Api;
+using KKTalking.Api.Domain;
 using KKTalking.Api.Domain.Search;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
@@ -65,9 +66,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
+            services.AddInstagram();
+            services.TryAddSingleton(provider =>
+            {
+                var x = provider.GetRequiredService<AppSettings>();
+                return new StorageAccountProvider(x);
+            });
+
             const string SearchServiceHttpClient = "KKTalking.Api.Domain.Search.SearchService.HttpClient";
             services.AddHttpClient(SearchServiceHttpClient);
-            services.AddInstagram();
             services.TryAddTransient(provider =>
             {
                 //--- Azure Cognitive Search のインスタンスを生成
