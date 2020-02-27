@@ -3,19 +3,19 @@
     /// <summary>
     /// 翻訳ペアを表します。
     /// </summary>
-    public readonly struct TranslationPair
+    public struct TranslationPair
     {
         #region プロパティ
         /// <summary>
-        /// 英語を取得します。
+        /// 英語を取得または設定します。
         /// </summary>
-        public string English { get; }
+        public string English { get; set; }
 
 
         /// <summary>
-        /// 日本語を取得します。
+        /// 日本語を取得または設定します。
         /// </summary>
-        public string Japanese { get; }
+        public string Japanese { get; set; }
         #endregion
 
 

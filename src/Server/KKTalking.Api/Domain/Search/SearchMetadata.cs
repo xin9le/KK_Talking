@@ -13,45 +13,45 @@ namespace KKTalking.Api.Domain.Search
     {
         #region プロパティ
         /// <summary>
-        /// 短い ID を取得します。
+        /// 短い ID を取得または設定します。
         /// </summary>
-        public string ShortCode { get; }
+        public string ShortCode { get; set; }
 
 
         /// <summary>
-        /// 画像 URL を取得します。
+        /// 画像 URL を取得または設定します。
         /// </summary>
-        public string ImageUrl { get; }
+        public string ImageUrl { get; set; }
 
 
         /// <summary>
-        /// 投稿日時を取得します。
+        /// 投稿日時を取得または設定します。
         /// </summary>
-        public DateTimeOffset PublishdAt { get; }
+        public DateTimeOffset PublishdAt { get; set; }
 
 
         /// <summary>
-        /// 投稿番号を取得します。
+        /// 投稿番号を取得または設定します。
         /// </summary>
-        public int Number { get; }
+        public int Number { get; set; }
 
 
         /// <summary>
-        /// 投稿のトピックを取得します。
+        /// 投稿のトピックを取得または設定します。
         /// </summary>
-        public IReadOnlyList<TranslationPair> Topics { get; }
+        public IReadOnlyList<TranslationPair> Topics { get; set; }
 
 
         /// <summary>
-        /// 投稿に関連する Tips を取得します。
+        /// 投稿に関連する Tips を取得または設定します。
         /// </summary>
-        public IReadOnlyList<TranslationPair> Tips { get; }
+        public IReadOnlyList<TranslationPair> Tips { get; set; }
 
 
         /// <summary>
-        /// 投稿の会話文を取得します。
+        /// 投稿の会話文を取得または設定します。
         /// </summary>
-        public string Conversation { get; }
+        public string Conversation { get; set; }
         #endregion
 
 
