@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             const string HttpClientName = "KKTalking.Externals.Instagram.Services.ScrapingService.HttpClient";
             services.AddHttpClient(HttpClientName);
-            services.TryAddScoped(provider =>
+            services.TryAddSingleton(provider =>
             {
                 var factory = provider.GetRequiredService<IHttpClientFactory>();
                 var client = factory.CreateClient(HttpClientName);
