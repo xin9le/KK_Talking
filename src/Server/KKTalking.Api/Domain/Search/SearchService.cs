@@ -64,7 +64,7 @@ namespace KKTalking.Api.Domain.Search
             var posts = await this.ScrapingService.ExtractPostSlimsAsync(AccountName, recursive, cancellationToken).ConfigureAwait(false);
 
             //--- キャプションを解析して Blob Storage にアップロード
-            var container = this.BlobClient.GetContainerReference("search-metadata");
+            var container = this.BlobClient.GetContainerReference("instagram-post-search-metadata");
             foreach (var x in posts)
             {
                 try
