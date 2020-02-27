@@ -1,7 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using KKTalking.Api.Domain.Search;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
 
 
 
@@ -36,9 +39,26 @@ namespace KKTalking.Api.Controllers
         /// <param name="timer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [FunctionName("Http_BuildSearchData")]
+        public async Task<IActionResult> BuildOne(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "search/build/{shortCode}")] HttpRequest request,
+            [FromRoute] string shortCode,
+            CancellationToken cancellationToken)
+        {
+            var metadata = await this.SearchService.BuildAsync(shortCode, cancellationToken).ConfigureAwait(false);
+            return new OkObjectResult(metadata);
+        }
+
+
+        /// <summary>
+        /// 検索データを構築します。
+        /// </summary>
+        /// <param name="timer"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [Disable("Disable_BuildSearchData")]
         [FunctionName("Timer_BuildSearchData")]
-        public async Task Build(
+        public async Task BuildMulti(
             [TimerTrigger("%CRON_BuildSearchData%")]TimerInfo timer,
             CancellationToken cancellationToken)
         {

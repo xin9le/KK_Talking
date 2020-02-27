@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using KKTalking.Externals.Instagram.Services;
 using Microsoft.Azure.Storage;
@@ -59,28 +60,54 @@ namespace KKTalking.Api.Domain.Search
         /// <returns></returns>
         public async ValueTask BuildAsync(CancellationToken cancellationToken = default)
         {
-            //--- 取得
             const bool recursive = false;
             var posts = await this.ScrapingService.ExtractPostSlimsAsync(AccountName, recursive, cancellationToken).ConfigureAwait(false);
 
-            //--- キャプションを解析して Blob Storage にアップロード
-            var container = this.BlobClient.GetContainerReference("instagram-post-search-metadata");
             foreach (var x in posts)
             {
-                try
-                {
-                    var result = CaptionParser.Parse(x.Caption);
-                    var metadata = new SearchMetadata(x, result);
-                    var fileName = $"KK{metadata.Number}.json";
-                    var json = JsonSerializer.Serialize(metadata);
-                    var blob = container.GetBlockBlobReference(fileName);
-                    await blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken).ConfigureAwait(false);
-                }
-                catch
-                {
-                    // エラーは一旦無視
-                }
+                var result = CaptionParser.Parse(x.Caption);
+                var metadata = new SearchMetadata(x, result);
+                await this.UploadAsync(metadata, cancellationToken).ConfigureAwait(false);
             }
+        }
+
+
+        /// <summary>
+        /// 検索データを構築します。
+        /// </summary>
+        /// <param name="shortCode"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async ValueTask<SearchMetadata> BuildAsync(string shortCode, CancellationToken cancellationToken = default)
+        {
+            var post = await this.ScrapingService.ExtractPostAsync(shortCode, cancellationToken).ConfigureAwait(false);
+            if (post.Owner.UserName != AccountName)
+            {
+                var message = $"{AccountName} 以外の投稿データを取得しようとしています | AccountName : {post.Owner.UserName}";
+                throw new InvalidOperationException(message);
+            }
+
+            var result = CaptionParser.Parse(post.Caption);
+            var metadata = new SearchMetadata(post, result);
+            await this.UploadAsync(metadata, cancellationToken).ConfigureAwait(false);
+            return metadata;
+        }
+
+
+        /// <summary>
+        /// 検索メタデータをアップロードします。
+        /// </summary>
+        /// <param name="metadata"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private ValueTask UploadAsync(SearchMetadata metadata, CancellationToken cancellationToken = default)
+        {
+            var fileName = $"KK{metadata.Number}.json";
+            var json = JsonSerializer.Serialize(metadata);
+            var container = this.BlobClient.GetContainerReference("instagram-post-search-metadata");
+            var blob = container.GetBlockBlobReference(fileName);
+            var task = blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken);
+            return new ValueTask(task);
         }
     }
 }

@@ -71,6 +71,23 @@ namespace KKTalking.Api.Domain.Search
             this.Tips = result.Tips;
             this.Conversation = result.Conversation;
         }
+
+
+        /// <summary>
+        /// インスタンスを生成します。
+        /// </summary>
+        /// <param name="post"></param>
+        /// <param name="result"></param>
+        internal SearchMetadata(Post post, CaptionParseResult result)
+        {
+            this.ShortCode = post.ShortCode;
+            this.ImageUrl = post.Medias[0].ImageUrl;
+            this.PublishdAt = post.PublishdAt;
+            this.Number = result.Number;
+            this.Topics = result.Topics;
+            this.Tips = result.Tips;
+            this.Conversation = result.Conversation;
+        }
         #endregion
     }
 }
