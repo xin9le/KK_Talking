@@ -212,7 +212,11 @@ namespace KKTalking.Api.Domain.Search
                 }
                 else if (this.Section == CaptionSection.Tips)
                 {
-                    if (this.CurrentLine.StartsWith("- "))
+                    if (this.IsTipsHeader || this.IsEmptyLine)
+                    {
+                        // skip
+                    }
+                    else if (this.CurrentLine.StartsWith("- "))
                     {
                         var splited = this.CurrentLine.TrimStart('-').Split('/');
                         if (splited.Length < 2)
