@@ -19,7 +19,7 @@ namespace KKTalking.Api.Domain.Search
         /// <summary>
         /// 投稿のトピックを取得します。
         /// </summary>
-        public TranslationPair Topic { get; }
+        public IReadOnlyList<TranslationPair> Topics { get; }
 
 
         /// <summary>
@@ -40,13 +40,13 @@ namespace KKTalking.Api.Domain.Search
         /// インスタンスを生成します。
         /// </summary>
         /// <param name="number"></param>
-        /// <param name="topic"></param>
+        /// <param name="topics"></param>
         /// <param name="tips"></param>
         /// <param name="conversation"></param>
-        internal CaptionParseResult(int number, in TranslationPair topic, IReadOnlyList<TranslationPair> tips, string conversation)
+        internal CaptionParseResult(int number, in IReadOnlyList<TranslationPair> topics, IReadOnlyList<TranslationPair> tips, string conversation)
         {
             this.Number = number;
-            this.Topic = topic;
+            this.Topics = topics;
             this.Tips = tips;
             this.Conversation = conversation;
         }

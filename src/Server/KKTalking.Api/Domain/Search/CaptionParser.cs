@@ -154,10 +154,9 @@ namespace KKTalking.Api.Domain.Search
         private CaptionParseResult Parse()
         {
             var number = 0;
-            TranslationPair topic = default;
+            var topics = new List<TranslationPair>();
             var tips = new List<TranslationPair>();
             var conversationBuilder = new StringBuilder();
-            var isTopicParsed = false;
 
             while (this.LineNumber < this.Lines.Count)
             {
@@ -184,11 +183,31 @@ namespace KKTalking.Api.Domain.Search
                 }
                 else if (this.Section == CaptionSection.Topic)
                 {
-                    if (!isTopicParsed && !this.IsTopicHeader && !this.IsEmptyLine)
+                    if (this.IsTopicHeader || this.IsEmptyLine)
                     {
-                        var splited = this.CurrentLine.Split('/');
-                        topic = new TranslationPair(splited[0].Trim(), splited[1].Trim());
-                        isTopicParsed = true;
+                        // skip
+                    }
+                    else if (this.CurrentLine.StartsWith("- "))
+                    {
+                        var splited = this.CurrentLine.TrimStart('-').Split('/');
+                        var pair = new TranslationPair(splited[0].Trim(), splited[1].Trim());
+                        topics.Add(pair);
+                    }
+                    else
+                    {
+                        //--- 前の行がヘッダーかどうかを判定
+                        var backup = this.LineNumber;
+                        this.LineNumber--;  // ひとつ前に戻す
+                        var previousLineIsTopicHeacer = this.IsTopicHeader;
+                        this.LineNumber = backup;  // 元に戻す
+
+                        //--- ヘッダーだったら読み込む
+                        if (previousLineIsTopicHeacer)
+                        {
+                            var splited = this.CurrentLine.Split('/');
+                            var pair = new TranslationPair(splited[0].Trim(), splited[1].Trim());
+                            topics.Add(pair);
+                        }                        
                     }
                 }
                 else if (this.Section == CaptionSection.Tips)
@@ -231,7 +250,7 @@ namespace KKTalking.Api.Domain.Search
             }
 
             var conversation = conversationBuilder.ToString().TrimEnd();
-            return new CaptionParseResult(number, topic, tips, conversation);
+            return new CaptionParseResult(number, topics, tips, conversation);
 
             #region ローカル関数
             void UpdateSection()

@@ -39,7 +39,7 @@ namespace KKTalking.Api.Domain.Search
         /// <summary>
         /// 投稿のトピックを取得します。
         /// </summary>
-        public TranslationPair Topic { get; }
+        public IReadOnlyList<TranslationPair> Topics { get; }
 
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace KKTalking.Api.Domain.Search
             this.ImageUrl = post.ImageUrl;
             this.PublishdAt = post.PublishdAt;
             this.Number = result.Number;
-            this.Topic = result.Topic;
+            this.Topics = result.Topics;
             this.Tips = result.Tips;
             this.Conversation = result.Conversation;
         }
