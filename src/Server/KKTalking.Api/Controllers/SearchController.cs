@@ -55,7 +55,7 @@ namespace KKTalking.Api.Controllers
         [Disable("Disable:BuildSearchData")]
         [FunctionName("Http_BuildSearchData")]
         public async Task<IActionResult> Build(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "search/build/{shortCode}")] HttpRequest request,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = "search/build/{shortCode}")] HttpRequest request,
             [FromRoute] string shortCode,
             CancellationToken cancellationToken)
         {
@@ -107,7 +107,7 @@ namespace KKTalking.Api.Controllers
         [Disable("Disable:KeywordSearch")]
         [FunctionName("Http_KeywordSearch")]
         public async Task<IActionResult> KeywordSearch(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "search")] HttpRequest request,
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "search")] HttpRequest request,
             CancellationToken cancellationToken)
         {
             if (!request.Query.TryGetValue("q", out var searchText))
