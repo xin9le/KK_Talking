@@ -69,7 +69,8 @@ namespace KKTalking.Api.Domain.Search
             {
                 try
                 {
-                    var metadata = CaptionParser.Parse(x.Caption);
+                    var result = CaptionParser.Parse(x.Caption);
+                    var metadata = new SearchMetadata(x, result);
                     var fileName = $"KK{metadata.Number}.json";
                     var json = JsonSerializer.Serialize(metadata);
                     var blob = container.GetBlockBlobReference(fileName);

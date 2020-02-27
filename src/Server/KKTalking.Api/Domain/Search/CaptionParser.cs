@@ -143,7 +143,7 @@ namespace KKTalking.Api.Domain.Search
         /// </summary>
         /// <param name="caption"></param>
         /// <returns></returns>
-        public static SearchMetadata Parse(string caption)
+        public static CaptionParseResult Parse(string caption)
             => new CaptionParser(caption).Parse();
 
 
@@ -151,7 +151,7 @@ namespace KKTalking.Api.Domain.Search
         /// 解析を行います。
         /// </summary>
         /// <returns></returns>
-        private SearchMetadata Parse()
+        private CaptionParseResult Parse()
         {
             var number = 0;
             TranslationPair topic = default;
@@ -231,7 +231,7 @@ namespace KKTalking.Api.Domain.Search
             }
 
             var conversation = conversationBuilder.ToString().TrimEnd();
-            return new SearchMetadata(number, topic, tips, conversation);
+            return new CaptionParseResult(number, topic, tips, conversation);
 
             #region ローカル関数
             void UpdateSection()

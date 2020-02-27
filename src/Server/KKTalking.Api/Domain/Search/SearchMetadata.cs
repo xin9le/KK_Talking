@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using KKTalking.Externals.Instagram.Models;
 
 
 
@@ -10,6 +12,24 @@ namespace KKTalking.Api.Domain.Search
     public sealed class SearchMetadata
     {
         #region プロパティ
+        /// <summary>
+        /// 短い ID を取得します。
+        /// </summary>
+        public string ShortCode { get; }
+
+
+        /// <summary>
+        /// 画像 URL を取得します。
+        /// </summary>
+        public string ImageUrl { get; }
+
+
+        /// <summary>
+        /// 投稿日時を取得します。
+        /// </summary>
+        public DateTimeOffset PublishdAt { get; }
+
+
         /// <summary>
         /// 投稿番号を取得します。
         /// </summary>
@@ -39,16 +59,17 @@ namespace KKTalking.Api.Domain.Search
         /// <summary>
         /// インスタンスを生成します。
         /// </summary>
-        /// <param name="number"></param>
-        /// <param name="topic"></param>
-        /// <param name="tips"></param>
-        /// <param name="conversation"></param>
-        internal SearchMetadata(int number, in TranslationPair topic, IReadOnlyList<TranslationPair> tips, string conversation)
+        /// <param name="post"></param>
+        /// <param name="result"></param>
+        internal SearchMetadata(PostSlim post, CaptionParseResult result)
         {
-            this.Number = number;
-            this.Topic = topic;
-            this.Tips = tips;
-            this.Conversation = conversation;
+            this.ShortCode = post.ShortCode;
+            this.ImageUrl = post.ImageUrl;
+            this.PublishdAt = post.PublishdAt;
+            this.Number = result.Number;
+            this.Topic = result.Topic;
+            this.Tips = result.Tips;
+            this.Conversation = result.Conversation;
         }
         #endregion
     }
