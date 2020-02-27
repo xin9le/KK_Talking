@@ -1,4 +1,7 @@
-﻿using KKTalking.Api.Domain.Search;
+﻿using System.Net.Http;
+using KKTalking.Api;
+using KKTalking.Api.Domain.Search;
+using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -48,7 +51,9 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             //--- DI に登録
+            var appSettings = configuration.Get<AppSettings>(o => o.BindNonPublicProperties = true);
             services.AddSingleton(configuration);
+            services.AddSingleton(appSettings);
             return configuration;
         }
 
@@ -60,8 +65,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddDomainServices(this IServiceCollection services)
         {
+            const string SearchServiceHttpClient = "KKTalking.Api.Domain.Search.SearchService.HttpClient";
+            services.AddHttpClient(SearchServiceHttpClient);
             services.AddInstagram();
-            services.TryAddScoped<SearchService>();
+            services.TryAddTransient(provider =>
+            {
+                //--- Azure Cognitive Search のインスタンスを生成
+                var factory = provider.GetRequiredService<IHttpClientFactory>();
+                var httpClient = factory.CreateClient(SearchServiceHttpClient);
+                var config = provider.GetRequiredService<AppSettings>().CognitiveSearch;
+                var credentials = new SearchCredentials(config.ApiKey);
+                var serviceClient = new SearchServiceClient(credentials, httpClient, false) { SearchServiceName = config.ServiceName };
+                return ActivatorUtilities.CreateInstance<SearchService>(provider, serviceClient);
+            });
             return services;
         }
     }

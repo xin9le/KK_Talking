@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using KKTalking.Externals.Instagram.Services;
+using Microsoft.Azure.Search;
+using Microsoft.Azure.Search.Models;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +38,12 @@ namespace KKTalking.Api.Domain.Search
         /// Blob Storage へのアクセス機能を取得します。
         /// </summary>
         private CloudBlobClient BlobClient { get; }
+
+
+        /// <summary>
+        /// Cognitive Search へのアクセス機能を取得します。
+        /// </summary>
+        private SearchServiceClient SearchClient { get; }
         #endregion
 
 
@@ -44,11 +53,13 @@ namespace KKTalking.Api.Domain.Search
         /// </summary>
         /// <param name="scrapingService"></param>
         /// <param name="configuration"></param>
-        public SearchService(ScrapingService scrapingService, IConfigurationRoot config)
+        /// <param name="config"></param>
+        public SearchService(ScrapingService scrapingService, IConfigurationRoot config, SearchServiceClient searchClient)
         {
             this.ScrapingService = scrapingService;
             var account = CloudStorageAccount.Parse(config["AzureWebJobsStorage"]);
             this.BlobClient = account.CreateCloudBlobClient();
+            this.SearchClient = searchClient;
         }   
         #endregion
 
@@ -95,6 +106,43 @@ namespace KKTalking.Api.Domain.Search
 
 
         /// <summary>
+        /// 指定されたキーワードで投稿の検索を行います。
+        /// </summary>
+        /// <param name="searchText"></param>
+        /// <param name="top"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async ValueTask<SearchMetadata[]> SearchAsync(string searchText, int? top = default, CancellationToken cancellationToken = default)
+        {
+            const string indexName = "instagram-post-index";
+            var indexClient = this.SearchClient.Indexes.GetClient(indexName);
+            var result
+                = await indexClient.Documents
+                .SearchAsync<SearchMetadata>
+                (
+                    searchText,
+                    searchParameters: new SearchParameters
+                    {
+                        SearchMode = SearchMode.All,
+                        //HighlightFields = new []
+                        //{
+                        //    "Conversation",
+                        //    "Topics/English",
+                        //    "Topics/Japanese",
+                        //    "Tips/English",
+                        //    "Tips/Japanese",
+                        //},
+                        Top = top,
+                    },
+                    cancellationToken: cancellationToken
+                )
+                .ConfigureAwait(false);
+            return result.Results.Select(x => x.Document).ToArray();
+        }
+
+
+        #region 補助
+        /// <summary>
         /// 検索メタデータをアップロードします。
         /// </summary>
         /// <param name="metadata"></param>
@@ -109,5 +157,6 @@ namespace KKTalking.Api.Domain.Search
             var task = blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken);
             return new ValueTask(task);
         }
+        #endregion
     }
 }

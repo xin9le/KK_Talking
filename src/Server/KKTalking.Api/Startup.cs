@@ -20,8 +20,7 @@ namespace KKTalking.Api
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var services = builder.Services;
-            var config = services.AddConfiguration();
-            //var appSettings = config.Get<AppSettings>(o => o.BindNonPublicProperties = true);
+            _ = services.AddConfiguration();
             services.AddDomainServices();
         }
     }
