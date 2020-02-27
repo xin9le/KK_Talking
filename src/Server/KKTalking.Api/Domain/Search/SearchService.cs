@@ -6,6 +6,7 @@ using KKTalking.Externals.Instagram.Services;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Azure.Storage.Blob;
+using Microsoft.Extensions.Logging;
 using Utf8Json;
 
 
@@ -42,6 +43,12 @@ namespace KKTalking.Api.Domain.Search
         /// Cognitive Search へのアクセス機能を取得します。
         /// </summary>
         private SearchServiceClient SearchClient { get; }
+
+
+        /// <summary>
+        /// ロガーを取得します。
+        /// </summary>
+        private ILogger Logger { get; }
         #endregion
 
 
@@ -52,12 +59,14 @@ namespace KKTalking.Api.Domain.Search
         /// <param name="scrapingService"></param>
         /// <param name="accountProvider"></param>
         /// <param name="searchClient"></param>
-        public SearchService(ScrapingService scrapingService, StorageAccountProvider accountProvider, SearchServiceClient searchClient)
+        /// <param name="logger"></param>
+        public SearchService(ScrapingService scrapingService, StorageAccountProvider accountProvider, SearchServiceClient searchClient, ILogger<SearchService> logger)
         {
             this.ScrapingService = scrapingService;
             this.BlobClient = accountProvider.AzureWebJobs.CreateCloudBlobClient();
             this.SearchClient = searchClient;
-        }   
+            this.Logger = logger;
+        }
         #endregion
 
 
@@ -73,9 +82,18 @@ namespace KKTalking.Api.Domain.Search
 
             foreach (var x in posts)
             {
-                var result = CaptionParser.Parse(x.Caption);
-                var metadata = new SearchMetadata(x, result);
-                await this.UploadAsync(metadata, cancellationToken).ConfigureAwait(false);
+                try
+                {
+                    var result = CaptionParser.Parse(x.Caption);
+                    var metadata = new SearchMetadata(x, result);
+                    await this.UploadAsync(metadata, cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    var message = $"検索データの構築中にエラーが発生しました | ShortCode : {x.ShortCode}";
+                    this.Logger.LogError(ex, message);
+                    throw;
+                }
             }
         }
 

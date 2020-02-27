@@ -1,10 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using KKTalking.Api.Domain.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
 
 
 
@@ -20,6 +22,12 @@ namespace KKTalking.Api.Controllers
         /// 検索サービスを取得します。
         /// </summary>
         private SearchService SearchService { get; }
+
+
+        /// <summary>
+        /// ロガーを取得します。
+        /// </summary>
+        private ILogger Logger { get; }
         #endregion
 
 
@@ -28,8 +36,12 @@ namespace KKTalking.Api.Controllers
         /// インスタンスを生成します。
         /// </summary>
         /// <param name="searchService"></param>
-        public SearchController(SearchService searchService)
-            => this.SearchService = searchService;
+        /// <param name="logger"></param>
+        public SearchController(SearchService searchService, ILogger<SearchController> logger)
+        {
+            this.SearchService = searchService;
+            this.Logger = logger;
+        }
         #endregion
 
 
@@ -47,8 +59,17 @@ namespace KKTalking.Api.Controllers
             [FromRoute] string shortCode,
             CancellationToken cancellationToken)
         {
-            var metadata = await this.SearchService.BuildAsync(shortCode, cancellationToken).ConfigureAwait(false);
-            return new OkObjectResult(metadata);
+            try
+            {
+                var metadata = await this.SearchService.BuildAsync(shortCode, cancellationToken).ConfigureAwait(false);
+                return new OkObjectResult(metadata);
+            }
+            catch (Exception ex)
+            {
+                var message = $"検索データの構築中にエラーが発生しました | ShortCode : {shortCode}";
+                this.Logger.LogError(ex, message);
+                throw;
+            }
         }
 
 
@@ -64,7 +85,16 @@ namespace KKTalking.Api.Controllers
             [TimerTrigger("%Cron:BuildMultiSearchData%")]TimerInfo timer,
             CancellationToken cancellationToken)
         {
-            await this.SearchService.BuildAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                await this.SearchService.BuildAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                var message = $"検索データの定期構築中にエラーが発生しました";
+                this.Logger.LogError(ex, message);
+                throw;
+            }
         }
 
 
