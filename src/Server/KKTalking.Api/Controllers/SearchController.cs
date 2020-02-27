@@ -36,7 +36,8 @@ namespace KKTalking.Api.Controllers
         /// <summary>
         /// 検索データを構築します。
         /// </summary>
-        /// <param name="timer"></param>
+        /// <param name="request"></param>
+        /// <param name="shortCode"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [Disable("Disable:BuildSearchData")]
@@ -64,6 +65,27 @@ namespace KKTalking.Api.Controllers
             CancellationToken cancellationToken)
         {
             await this.SearchService.BuildAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+
+        /// <summary>
+        /// キーワード検索します。
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        [Disable("Disable:KeywordSearch")]
+        [FunctionName("Http_KeywordSearch")]
+        public async Task<IActionResult> KeywordSearch(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "search")] HttpRequest request,
+            CancellationToken cancellationToken)
+        {
+            if (!request.Query.TryGetValue("q", out var searchText))
+                return new BadRequestObjectResult("Can't find search parameter.");
+
+            int? top = null;  // 一旦既定値にしておく
+            var result = await this.SearchService.SearchAsync(searchText, top, cancellationToken).ConfigureAwait(false);
+            return new OkObjectResult(result);
         }
     }
 }
