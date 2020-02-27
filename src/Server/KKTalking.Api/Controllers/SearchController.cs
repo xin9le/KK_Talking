@@ -39,8 +39,9 @@ namespace KKTalking.Api.Controllers
         /// <param name="timer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        [Disable("Disable:BuildSearchData")]
         [FunctionName("Http_BuildSearchData")]
-        public async Task<IActionResult> BuildOne(
+        public async Task<IActionResult> Build(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "search/build/{shortCode}")] HttpRequest request,
             [FromRoute] string shortCode,
             CancellationToken cancellationToken)
@@ -56,10 +57,10 @@ namespace KKTalking.Api.Controllers
         /// <param name="timer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Disable("Disable:BuildSearchData")]
-        [FunctionName("Timer_BuildSearchData")]
+        [Disable("Disable:BuildMultiSearchData")]
+        [FunctionName("Timer_BuildMultiSearchData")]
         public async Task BuildMulti(
-            [TimerTrigger("%Cron:BuildSearchData%")]TimerInfo timer,
+            [TimerTrigger("%Cron:BuildMultiSearchData%")]TimerInfo timer,
             CancellationToken cancellationToken)
         {
             await this.SearchService.BuildAsync(cancellationToken).ConfigureAwait(false);
