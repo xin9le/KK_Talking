@@ -25,10 +25,10 @@ namespace KKTalking.Api.Controllers
         /// <param name="timer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Disable("Disable_AlwaysOn")]
+        [Disable("Disable:AlwaysOn")]
         [FunctionName("Timer_AlwaysOn")]
         public void AlwaysOn(
-            [TimerTrigger("%CRON_AlwaysOn%")]TimerInfo timer,
+            [TimerTrigger("%Cron:AlwaysOn%")]TimerInfo timer,
             CancellationToken cancellationToken)
         {}
     }

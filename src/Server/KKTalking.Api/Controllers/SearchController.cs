@@ -56,10 +56,10 @@ namespace KKTalking.Api.Controllers
         /// <param name="timer"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [Disable("Disable_BuildSearchData")]
+        [Disable("Disable:BuildSearchData")]
         [FunctionName("Timer_BuildSearchData")]
         public async Task BuildMulti(
-            [TimerTrigger("%CRON_BuildSearchData%")]TimerInfo timer,
+            [TimerTrigger("%Cron:BuildSearchData%")]TimerInfo timer,
             CancellationToken cancellationToken)
         {
             await this.SearchService.BuildAsync(cancellationToken).ConfigureAwait(false);
