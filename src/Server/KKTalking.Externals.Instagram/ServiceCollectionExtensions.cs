@@ -1,4 +1,5 @@
-﻿using KKTalking.Externals.Instagram.Services;
+﻿using System.Net.Http;
+using KKTalking.Externals.Instagram.Services;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
@@ -17,8 +18,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddInstagram(this IServiceCollection services)
         {
-            services.AddHttpClient();
-            services.TryAddScoped<ScrapingService>();
+            const string HttpClientName = "KKTalking.Externals.Instagram.Services.ScrapingService.HttpClient";
+            services.AddHttpClient(HttpClientName);
+            services.TryAddScoped(provider =>
+            {
+                var factory = provider.GetRequiredService<IHttpClientFactory>();
+                var client = factory.CreateClient(HttpClientName);
+                return new ScrapingService(client);
+            });
             return services;
         }
     }
