@@ -190,9 +190,7 @@ namespace KKTalking.Api.Domain.Search
                     else if (this.CurrentLine.StartsWith("- "))
                     {
                         var splited = this.CurrentLine.TrimStart('-').Split('/');
-                        var english = splited[0].Trim();
-                        var japanese = splited[1].Trim();
-                        var pair = new TranslationPair(english, japanese);
+                        var pair = CreateTranslationPair(splited);
                         topics.Add(pair);
                     }
                     else
@@ -207,9 +205,7 @@ namespace KKTalking.Api.Domain.Search
                         if (previousLineIsTopicHeacer)
                         {
                             var splited = this.CurrentLine.Split('/');
-                            var english = splited[0].Trim();
-                            var japanese = splited[1].Trim();
-                            var pair = new TranslationPair(english, japanese);
+                            var pair = CreateTranslationPair(splited);
                             topics.Add(pair);
                         }                        
                     }
@@ -222,15 +218,19 @@ namespace KKTalking.Api.Domain.Search
                     }
                     else if (this.CurrentLine.StartsWith("- "))
                     {
-                        var splited = this.CurrentLine.TrimStart('-').Split('/');
-                        if (splited.Length < 2)
+                        //--- 基本的には「/」区切りで解析
+                        var trimmed = this.CurrentLine.TrimStart('-');
+                        var splitBySlash = trimmed.Split('/');
+                        if (splitBySlash.Length < 2)
                         {
-                            var pair = new TranslationPair(string.Empty, splited[0].Trim());
+                            //--- 一部の例外のために「=」区切りにもチャレンジ
+                            var splitByEqual = trimmed.Split('=');
+                            var pair = CreateTranslationPair(splitByEqual);
                             tips.Add(pair);
                         }
                         else
                         {
-                            var pair = new TranslationPair(splited[0].Trim(), splited[1].Trim());
+                            var pair = CreateTranslationPair(splitBySlash);
                             tips.Add(pair);
                         }
                     }
@@ -282,6 +282,19 @@ namespace KKTalking.Api.Domain.Search
                         _ => this.Section,
                     };
                 }
+            }
+
+
+            static TranslationPair CreateTranslationPair(IReadOnlyList<string> splited)
+            {
+                var english = splited[0].Trim();
+                var japaneseSpan = splited[1].AsSpan();
+                var endIndex = japaneseSpan.IndexOf('(');  // 丸カッコ以降は無視する
+                var japanese
+                    = endIndex < 0
+                    ? japaneseSpan[0..].Trim().ToString()
+                    : japaneseSpan[0..endIndex].Trim().ToString();
+                return new TranslationPair(english, japanese);
             }
             #endregion
         }
