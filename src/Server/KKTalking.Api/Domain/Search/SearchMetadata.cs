@@ -11,6 +11,7 @@ namespace KKTalking.Api.Domain.Search
     /// </summary>
     public sealed class SearchMetadata
     {
+#pragma warning disable CS8618
         #region プロパティ
         /// <summary>
         /// 短い ID を取得または設定します。
@@ -59,6 +60,13 @@ namespace KKTalking.Api.Domain.Search
         /// <summary>
         /// インスタンスを生成します。
         /// </summary>
+        public SearchMetadata()
+        { }
+
+
+        /// <summary>
+        /// インスタンスを生成します。
+        /// </summary>
         /// <param name="post"></param>
         /// <param name="result"></param>
         internal SearchMetadata(PostSlim post, CaptionParseResult result)
@@ -89,5 +97,6 @@ namespace KKTalking.Api.Domain.Search
             this.Conversation = result.Conversation;
         }
         #endregion
+#pragma warning restore CS8618
     }
 }
