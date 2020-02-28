@@ -170,7 +170,7 @@ class KKSearch {
         //--- Topics
         let topics = '';
         if (0 < metadata.topics.length) {
-            topics = '<div class="kk_topic"><div>⚜️Topic</div><dl>';
+            topics = '<div class="kk_topics"><h2>⚜️Topic</h2><dl>';
             for (const x of metadata.topics) {
                 topics +=
                     `<dt>${x.english}</dt>
@@ -182,7 +182,7 @@ class KKSearch {
         //--- Tips
         let tips = '';
         if (0 < metadata.tips.length) {
-            tips = '<div class="kk_topic"><div>🍀Tips</div><dl>';
+            tips = '<div class="kk_tips"><h2>🍀Tips</h2><dl>';
             for (const x of metadata.tips) {
                 tips +=
                     `<dt>${x.english}</dt>

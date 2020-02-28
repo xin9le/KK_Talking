@@ -5,7 +5,6 @@
 
 .kk_searchBox {
     text-align: center;
-    margin-bottom: 17px;
 }
 
 
@@ -14,25 +13,72 @@
 }
 
 
-#kk_searchResultContainer .kk_itemBox {
+.kk_itemBox {
+    margin-top: 17px;
     display: flex;
     align-items: stretch;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row;
     flex-wrap: nowrap;
 }
 
 
-#kk_searchResultContainer .kk_imageBox {
-    flex-grow: 1; 
+.kk_imageBox {
+    margin-right: 34px;
+    flex-basis: 30%;
 }
 
 
-#kk_searchResultContainer .kk_imageBox img {
-    height: auto;
+.kk_imageBox img {
+    object-fit: fill;
+    width: 100%;
 }
 
 
-#kk_searchResultContainer .kk_infoBox {
-    flex-grow: 3; 
+.kk_infoBox {
+    flex-grow: 1;
+}
+
+
+.kk_infoBox h1 {
+    font-size: x-large;
+    font-weight: bolder;
+    margin-top: 12px;
+    margin-bottom: 17px;
+}
+
+
+.kk_infoBox h2 {
+    font-size: large;
+    font-weight: bolder;
+    margin-bottom: 5px;
+}
+
+
+.kk_infoBox dt {
+    float: left;
+    clear: left;
+    color: crimson;
+}
+
+
+.kk_infoBox dd {
+    float: left;
+    color: mediumblue;
+}
+
+
+.kk_infoBox dd::before {
+    margin: 0 10px;
+    content: "/";
+    color: darkgray;
+}
+
+
+.kk_topics {
+    margin-bottom: 17px;
+}
+
+
+.kk_tips {
 }
