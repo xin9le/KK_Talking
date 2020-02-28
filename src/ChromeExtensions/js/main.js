@@ -145,56 +145,64 @@ class KKSearch {
                 //--- 要素を追加
                 for (const x of result) {
                     console.log(x);
-
-                    //--- Topics
-                    let topics = '';
-                    if (0 < x.topics.length)
-                    {
-                        topics = '<div class="kk_topic"><div>⚜️Topic</div><dl>';
-                        for (const t of x.topics)
-                        {
-                            topics +=
-                                `<dt>${t.english}</dt>
-                                <dd>${t.japanese}</dd>`;
-                        }
-                        topics += '</dl></div>';
-                    }
-
-                    //--- Tips
-                    let tips = '';
-                    if (0 < x.tips.length)
-                    {
-                        tips = '<div class="kk_topic"><div>🍀Tips</div><dl>';
-                        for (const t of x.tips)
-                        {
-                            tips +=
-                                `<dt>${t.english}</dt>
-                                <dd>${t.japanese}</dd>`;
-                        }
-                        tips += '</dl></div>';
-                    }
-
-                    //--- 要素
-                    const item =
-                        `<div class="kk_itemBox">
-                            <div class="kk_imageBox">
-                                <a href="https://www.instagram.com/p/${x.shortCode}" target="_blank">
-                                    <img src="${x.imageUrl}" />
-                                </a>
-                            </div>
-                            <div class="kk_infoBox">
-                                <a href="https://www.instagram.com/p/${x.shortCode}" target="_blank"><h1>KK ${x.number}</h1></a>
-                                ${topics}
-                                ${tips}
-                            </div>
-                        </div>`;
-                    container.append(item);
+                    const element = this.createSearchResultElement(x);
+                    container.append(element);
                 }
             }
             catch (ex) {
                 console.error(ex);
             }
         });
+    }
+
+
+    static createSearchResultElement(metadata)
+    {
+        //--- Topics
+        let topics = '';
+        if (0 < metadata.topics.length)
+        {
+            topics = '<div class="kk_topic"><div>⚜️Topic</div><dl>';
+            for (const x of metadata.topics)
+            {
+                topics +=
+                    `<dt>${x.english}</dt>
+                    <dd>${x.japanese}</dd>`;
+            }
+            topics += '</dl></div>';
+        }
+
+        //--- Tips
+        let tips = '';
+        if (0 < metadata.tips.length)
+        {
+            tips = '<div class="kk_topic"><div>🍀Tips</div><dl>';
+            for (const x of metadata.tips)
+            {
+                tips +=
+                    `<dt>${x.english}</dt>
+                    <dd>${x.japanese}</dd>`;
+            }
+            tips += '</dl></div>';
+        }
+
+        //--- 要素
+        const item =
+            `<div class="kk_itemBox">
+                <div class="kk_imageBox">
+                    <a href="https://www.instagram.com/p/${metadata.shortCode}" target="_blank">
+                        <img src="${metadata.imageUrl}" />
+                    </a>
+                </div>
+                <div class="kk_infoBox">
+                    <a href="https://www.instagram.com/p/${metadata.shortCode}" target="_blank">
+                        <h1>KK ${metadata.number}</h1>
+                    </a>
+                    ${topics}
+                    ${tips}
+                </div>
+            </div>`;
+        return item;
     }
 }
 
