@@ -130,8 +130,13 @@ class KKSearch {
 
     static attachSearchBoxEvent() {
         $('.kk_searchBox form').on('submit', async e => {
+            //--- submit を無効化
             e.preventDefault();
-            const container = $('#kk_searchResultContainer');
+
+            //--- 検索ボックスを無効化
+            const textBox = e.target[0];
+            textBox.readOnly = true;
+
             try {
                 //--- 検索
                 const textBox = $(e.target).find('input[type="text"]');
@@ -140,11 +145,11 @@ class KKSearch {
                 const result = await $.get(url);
 
                 //--- 要素を削除
+                const container = $('#kk_searchResultContainer');
                 container.empty();
 
                 //--- 要素を追加
                 for (const x of result) {
-                    console.log(x);
                     const element = this.createSearchResultElement(x);
                     container.append(element);
                 }
@@ -152,19 +157,20 @@ class KKSearch {
             catch (ex) {
                 console.error(ex);
             }
+            finally {
+                //--- 元に戻す
+                textBox.readOnly = false;
+            }
         });
     }
 
 
-    static createSearchResultElement(metadata)
-    {
+    static createSearchResultElement(metadata) {
         //--- Topics
         let topics = '';
-        if (0 < metadata.topics.length)
-        {
+        if (0 < metadata.topics.length) {
             topics = '<div class="kk_topic"><div>⚜️Topic</div><dl>';
-            for (const x of metadata.topics)
-            {
+            for (const x of metadata.topics) {
                 topics +=
                     `<dt>${x.english}</dt>
                     <dd>${x.japanese}</dd>`;
@@ -174,11 +180,9 @@ class KKSearch {
 
         //--- Tips
         let tips = '';
-        if (0 < metadata.tips.length)
-        {
+        if (0 < metadata.tips.length) {
             tips = '<div class="kk_topic"><div>🍀Tips</div><dl>';
-            for (const x of metadata.tips)
-            {
+            for (const x of metadata.tips) {
                 tips +=
                     `<dt>${x.english}</dt>
                     <dd>${x.japanese}</dd>`;
