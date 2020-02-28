@@ -115,6 +115,7 @@ class KKSearch {
                 $(e.currentTarget).addClass(activeTabClassName);  // 検索タブを有効化
                 searchTabContent.show();
                 otherTabContent.hide();
+                $('.kk_searchBox input').focus();
                 return false;  // a タグを無効化
             }
             else {
