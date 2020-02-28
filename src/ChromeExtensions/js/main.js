@@ -125,21 +125,9 @@ class KKSearch {
             try
             {
                 const textBox = $(e.target).find('input[type="text"]');
-                console.log(textBox.val());
-
-                // todo: ajax で Azure Functions に問い合わせ
-                const task = new Promise(resolve =>
-                {
-                    resolve({
-                        id: 76,
-                        topic: 'when it comes to',
-                        tips: [
-                            'aiueo',
-                            'abcde',
-                        ]
-                    });
-                });
-                var result = await task;
+                const keyword = encodeURIComponent(textBox.val());
+                const url = 'https://kktalking.azure-api.net/instagram/v1/search?q=' + keyword;
+                const result = await $.get(url);
                 console.log(result);
 
                 // todo:
