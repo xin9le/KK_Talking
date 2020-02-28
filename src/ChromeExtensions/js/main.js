@@ -88,7 +88,7 @@ class KKSearch {
         const searchTabContentDomText
             = '<div id="kk_searchTabContent">'
             + '<div class="kk_searchBox"><form><input class="XTCLo x3qfX" type="text" placeholder="Input topic or tips here."></form></div>'
-            + '<div style="border: 1px solid">ここの下に検索結果を表示する</div>'
+            + '<div id="kk_searchResultContainer"></div>'
             + '</div>';
         tabContainer.append(searchTabDomText);
         tabContainer.after(searchTabContentDomText);
@@ -119,24 +119,69 @@ class KKSearch {
 
 
     static attachSearchBoxEvent() {
-        $('.kk_searchBox form').on('submit', async e =>
-        {
+        $('.kk_searchBox form').on('submit', async e => {
             e.preventDefault();
-            try
-            {
+            const container = $('#kk_searchResultContainer');
+            try {
+                //--- 検索
                 const textBox = $(e.target).find('input[type="text"]');
                 const keyword = encodeURIComponent(textBox.val());
                 const url = 'https://kktalking.azure-api.net/instagram/v1/search?q=' + keyword;
                 const result = await $.get(url);
-                console.log(result);
 
-                // todo:
-                // 検索に成功したら
-                // 1. 要素消して
-                // 2. 要素を新規追加
+                //--- 要素を削除
+                container.empty();
+
+                //--- 要素を追加
+                for (const x of result) {
+                    console.log(x);
+
+                    //--- Topics
+                    let topics = '';
+                    if (0 < x.topics.length)
+                    {
+                        topics = '<div class="kk_topic"><div>⚜️Topic</div><dl>';
+                        for (const t of x.topics)
+                        {
+                            topics +=
+                                `<dt>${t.english}</dt>
+                                <dd>${t.japanese}</dd>`;
+                        }
+                        topics += '</dl></div>';
+                    }
+
+                    //--- Tips
+                    let tips = '';
+                    if (0 < x.tips.length)
+                    {
+                        tips = '<div class="kk_topic"><div>🍀Tips</div><dl>';
+                        for (const t of x.tips)
+                        {
+                            tips +=
+                                `<dt>${t.english}</dt>
+                                <dd>${t.japanese}</dd>`;
+                        }
+                        tips += '</dl></div>';
+                    }
+
+                    //--- 要素
+                    const item =
+                        `<div class="kk_itemBox">
+                            <div class="kk_imageBox">
+                                <a href="https://www.instagram.com/p/${x.shortCode}" target="_blank">
+                                    <img src="${x.imageUrl}" />
+                                </a>
+                            </div>
+                            <div class="kk_infoBox">
+                                <a href="https://www.instagram.com/p/${x.shortCode}" target="_blank"><h1>KK ${x.number}</h1></a>
+                                ${topics}
+                                ${tips}
+                            </div>
+                        </div>`;
+                    container.append(item);
+                }
             }
-            catch (ex)
-            {
+            catch (ex) {
                 console.error(ex);
             }
         });

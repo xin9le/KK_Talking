@@ -5,9 +5,34 @@
 
 .kk_searchBox {
     text-align: center;
+    margin-bottom: 17px;
 }
 
 
 .kk_searchBox input {
     width: 50%;
+}
+
+
+#kk_searchResultContainer .kk_itemBox {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+
+#kk_searchResultContainer .kk_imageBox {
+    flex-grow: 1; 
+}
+
+
+#kk_searchResultContainer .kk_imageBox img {
+    height: auto;
+}
+
+
+#kk_searchResultContainer .kk_infoBox {
+    flex-grow: 3; 
 }
