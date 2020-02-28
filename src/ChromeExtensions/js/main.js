@@ -61,12 +61,12 @@ class KKSearch {
 
     static enable(document) {
         const observer = new MutationObserver(mutations => {
+            if (!KKSearch.isAvailable(location.href))
+                return;
+
             for (const x of mutations) {
-                if (x.type === 'childList') {
+                if (x.type === 'childList')
                     this.tryAddSearchTab();
-                    observer.disconnect();
-                    return;
-                }
             }
         });
         observer.observe(document, { childList: true, subtree: true });
@@ -158,6 +158,5 @@ class KKSearch {
 
 (function () {
     InstagramVideo.enableControl(document);
-    if (KKSearch.isAvailable(location.href))
-        KKSearch.enable(document);
+    KKSearch.enable(document);
 }());
