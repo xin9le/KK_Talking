@@ -84,12 +84,22 @@ class KKSearch {
             return;
 
         //--- なければ検索タブを生成
-        const searchTabDomText = '<a id="kk_searchTab" class="_9VEo1" href="/kk_talking#search"><span class="qzihg"><div class="coreSpriteSearchIcon"></div><span class="_08DtY">KK Search</span></span></a>';
-        const searchTabContentDomText
-            = '<div id="kk_searchTabContent">'
-            + '<div class="kk_searchBox"><form><input class="XTCLo x3qfX" type="text" placeholder="Input topic or tips here."></form></div>'
-            + '<div id="kk_searchResultContainer"></div>'
-            + '</div>';
+        const searchTabDomText =
+            `<a id="kk_searchTab" class="_9VEo1" href="/kk_talking#search">
+                <span class="qzihg">
+                    <div class="coreSpriteSearchIcon"></div>
+                    <span class="_08DtY">KK Search</span>
+                </span>
+            </a>`;
+        const searchTabContentDomText =
+            `<div id="kk_searchTabContent">
+                <div class="kk_searchBox">
+                    <form>
+                        <input class="XTCLo x3qfX" type="text" placeholder="Input topic or tips here.">
+                    </form>
+                </div>
+                <div id="kk_searchResultContainer"></div>
+            </div>`;
         tabContainer.append(searchTabDomText);
         tabContainer.after(searchTabContentDomText);
 
