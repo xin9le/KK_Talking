@@ -7,8 +7,8 @@ class InstagramVideo {
             for (const x of mutations) {
                 if (x.type !== 'childList')
                     continue;
-                this.enablePostsVideoControl(x.target);
-                this.enableHighlightsVideoControl(x.target);
+                this.enablePostsVideoControl(null);
+                this.enableHighlightsVideoControl(null);
             }
         });
         observer.observe(document, { childList: true, subtree: true });
