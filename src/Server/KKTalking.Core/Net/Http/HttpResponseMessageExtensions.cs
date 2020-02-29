@@ -15,8 +15,11 @@ namespace KKTalking.Net.Http
         /// <param name="response"></param>
         public static void ThrowIfError(this HttpResponseMessage response)
         {
-            if (!response.IsSuccessStatusCode)
-                throw new HttpResponseException(response);
+            if (response.IsSuccessStatusCode)
+                return;
+
+            var message = $"HTTP response was failed | StatudCode : {response.StatusCode}";
+            throw new HttpResponseException(response, message);
         }
 
 
