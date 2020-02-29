@@ -138,7 +138,7 @@ namespace KKTalking.Externals.Instagram.Services
         /// <returns></returns>
         public async ValueTask<Post> ExtractPostAsync(string shortCode, CancellationToken cancellationToken = default)
         {
-            var url = $"{RootUrl}/p/{shortCode}";
+            var url = $"{RootUrl}/p/{shortCode}/";
             var html = await this.GetHtmlAsync(url, cancellationToken).ConfigureAwait(false);
             var sharedData = this.ExtractSharedData(html);
             var json = JsonSerializer.Deserialize<dynamic>(sharedData);
