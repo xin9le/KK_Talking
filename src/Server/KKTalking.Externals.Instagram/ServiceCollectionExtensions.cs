@@ -18,18 +18,15 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services"></param>
         /// <returns></returns>
-        public static IServiceCollection AddInstagram(this IServiceCollection services, WebProxyConfiguration? webProxyConfig = null)
+        public static IServiceCollection AddInstagram(this IServiceCollection services, WebProxyConfiguration? config = null)
         {
             const string ScrapingServiceHttpClient = "KKTalking.Externals.Instagram.Services.ScrapingService.HttpClient";
             var builder = services.AddHttpClient(ScrapingServiceHttpClient);
-            if (webProxyConfig != null)
+            if (config != null)
             {
-                var proxy = new WebProxy(webProxyConfig.Host, webProxyConfig.Port);
-                if (webProxyConfig.Credentials != null)
-                {
-                    var c = webProxyConfig.Credentials;
-                    proxy.Credentials = new NetworkCredential(c.UserName, c.Password);
-                }
+                var proxy = new WebProxy(config.Host, config.Port);
+                if (config.Credentials != null)
+                    proxy.Credentials = new NetworkCredential(config.Credentials.UserName, config.Credentials.Password);
                 builder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler() { Proxy = proxy });
             }
             services.TryAddSingleton(provider =>
