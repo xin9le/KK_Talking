@@ -5,9 +5,15 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KKTalking.Api", "KKTalking.Api\KKTalking.Api.csproj", "{106B218C-83AD-42CB-87A3-51CBCA88F53C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKTalking.Externals.Instagram", "KKTalking.Externals.Instagram\KKTalking.Externals.Instagram.csproj", "{E7D1CCAD-04CD-44B4-9556-9F15B80CC391}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KKTalking.Externals.Instagram", "KKTalking.Externals.Instagram\KKTalking.Externals.Instagram.csproj", "{E7D1CCAD-04CD-44B4-9556-9F15B80CC391}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKTalking.Core", "KKTalking.Core\KKTalking.Core.csproj", "{BDC200D3-5EAC-4673-BF0C-CD85EFE16769}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KKTalking.Core", "KKTalking.Core\KKTalking.Core.csproj", "{BDC200D3-5EAC-4673-BF0C-CD85EFE16769}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KKTalking.Configurations", "KKTalking.Configurations\KKTalking.Configurations.csproj", "{0110EB33-E8ED-4795-A904-76BC05A0810A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{B9C9DD98-8C6B-4545-A7FD-146F559E33CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project Libraries", "Project Libraries", "{4D84E86E-416D-4436-835F-B39E0C67337F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,9 +33,19 @@ Global
 		{BDC200D3-5EAC-4673-BF0C-CD85EFE16769}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDC200D3-5EAC-4673-BF0C-CD85EFE16769}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDC200D3-5EAC-4673-BF0C-CD85EFE16769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0110EB33-E8ED-4795-A904-76BC05A0810A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0110EB33-E8ED-4795-A904-76BC05A0810A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0110EB33-E8ED-4795-A904-76BC05A0810A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0110EB33-E8ED-4795-A904-76BC05A0810A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{106B218C-83AD-42CB-87A3-51CBCA88F53C} = {B9C9DD98-8C6B-4545-A7FD-146F559E33CC}
+		{E7D1CCAD-04CD-44B4-9556-9F15B80CC391} = {4D84E86E-416D-4436-835F-B39E0C67337F}
+		{BDC200D3-5EAC-4673-BF0C-CD85EFE16769} = {4D84E86E-416D-4436-835F-B39E0C67337F}
+		{0110EB33-E8ED-4795-A904-76BC05A0810A} = {4D84E86E-416D-4436-835F-B39E0C67337F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2723372D-9DB1-44BC-9F06-10BC9749585B}
