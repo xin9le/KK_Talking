@@ -78,7 +78,7 @@ namespace KKTalking.Externals.Instagram.Services
                 : ((List<dynamic>)timeline["edges"]).Count;
 
             var buffer = new List<PostSlim>(count);
-            var heavyLoading = true;  // 連打を緩くする
+            var heavyLoading = false;  // 連打を緩くする
             await EnumerateAsync(this.HttpClient, buffer, userId, timeline, recursive, heavyLoading, cancellationToken).ConfigureAwait(false);
             return buffer;
 
