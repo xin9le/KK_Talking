@@ -23,6 +23,12 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// Instagram のアカウント名を表します。
         /// </summary>
         private const string AccountName = "kk_talking";
+
+
+        /// <summary>
+        /// 検索対象フィールドを表します。
+        /// </summary>
+        private static string[] TargetFields { get; } = new[] { "Topics/English", "Topics/Japanese", "Tips/English", "Tips/Japanese" };
         #endregion
 
 
@@ -139,14 +145,7 @@ namespace KKTalking.Api.Domain.Instagram.Search
                     searchParameters: new SearchParameters
                     {
                         SearchMode = SearchMode.All,
-                        //HighlightFields = new []
-                        //{
-                        //    "Conversation",
-                        //    "Topics/English",
-                        //    "Topics/Japanese",
-                        //    "Tips/English",
-                        //    "Tips/Japanese",
-                        //},
+                        SearchFields = TargetFields,
                         Top = top,
                     },
                     cancellationToken: cancellationToken
