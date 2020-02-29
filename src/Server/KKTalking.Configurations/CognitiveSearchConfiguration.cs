@@ -1,4 +1,4 @@
-﻿namespace KKTalking.Api.Configurations
+﻿namespace KKTalking.Configurations
 {
     /// <summary>
     /// Azure Cognitive Search の構成を表します。

@@ -1,4 +1,4 @@
-﻿using KKTalking.Api.Configurations;
+﻿using KKTalking.Configurations;
 
 
 
