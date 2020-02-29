@@ -20,8 +20,9 @@ namespace KKTalking.Api
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var services = builder.Services;
-            _ = services.AddConfiguration();
-            services.AddDomainServices();
+            var config = services.AddConfiguration();
+            var appSettings = services.AddAppSettings(config);
+            services.AddDomainServices(appSettings);
         }
     }
 }

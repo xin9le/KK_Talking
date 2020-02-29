@@ -52,10 +52,21 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             //--- DI に登録
-            var appSettings = configuration.Get<AppSettings>(o => o.BindNonPublicProperties = true);
             services.AddSingleton(configuration);
-            services.AddSingleton(appSettings);
             return configuration;
+        }
+
+
+        /// <summary>
+        /// アプリケーションの構成情報を DI サービスに登録します。
+        /// </summary>
+        /// <param name="services"></param>
+        /// <returns></returns>
+        public static AppSettings AddAppSettings(this IServiceCollection services, IConfigurationRoot config)
+        {
+            var appSettings = config.Get<AppSettings>(o => o.BindNonPublicProperties = true);
+            services.AddSingleton(appSettings);
+            return appSettings;
         }
 
 
@@ -63,15 +74,12 @@ namespace Microsoft.Extensions.DependencyInjection
         /// ドメインサービスを DI に登録します。
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="appSettings"></param>
         /// <returns></returns>
-        public static IServiceCollection AddDomainServices(this IServiceCollection services)
+        public static IServiceCollection AddDomainServices(this IServiceCollection services, AppSettings appSettings)
         {
-            services.AddInstagram();
-            services.TryAddSingleton(provider =>
-            {
-                var x = provider.GetRequiredService<AppSettings>();
-                return new StorageAccountProvider(x);
-            });
+            services.AddInstagram(appSettings.WebProxy);
+            services.TryAddSingleton(new StorageAccountProvider(appSettings));
 
             const string SearchServiceHttpClient = "KKTalking.Api.Domain.Search.SearchService.HttpClient";
             services.AddHttpClient(SearchServiceHttpClient);

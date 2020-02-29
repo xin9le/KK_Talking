@@ -20,6 +20,12 @@ namespace KKTalking.Api
         /// Azure Cognitive Service の構成を取得します。
         /// </summary>
         public CognitiveSearchConfiguration CognitiveSearch { get; private set; }
+
+
+        /// <summary>
+        /// Web Proxy の構成を取得します。
+        /// </summary>
+        public WebProxyConfiguration WebProxy { get; private set; }
 #pragma warning restore CS8618
     }
 }
