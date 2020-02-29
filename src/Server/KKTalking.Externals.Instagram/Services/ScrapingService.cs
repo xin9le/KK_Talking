@@ -160,7 +160,7 @@ namespace KKTalking.Externals.Instagram.Services
                 throw new ArgumentException(nameof(accountName));
 
             //--- SharedData を取得
-            var url = $"{RootUrl}/{accountName}";
+            var url = $"{RootUrl}/{accountName}/";
             var html = await this.GetHtmlAsync(url, cancellationToken).ConfigureAwait(false);
             var sharedData = this.ExtractSharedData(html);
 
