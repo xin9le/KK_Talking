@@ -28,7 +28,31 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <summary>
         /// 検索対象フィールドを表します。
         /// </summary>
-        private static string[] TargetFields { get; } = new[] { "Topics/English", "Topics/Japanese", "Tips/English", "Tips/Japanese" };
+        private static string[] SearchFields { get; }
+            = new[]
+            {
+                "Topics/English",
+                "Topics/Japanese",
+                "Tips/English",
+                "Tips/Japanese",
+            };
+
+
+        /// <summary>
+        /// 取得対象フィールドを表します。
+        /// </summary>
+        private static string[] SelectFields { get; }
+            = new[]
+            {
+                "ShortCode",
+                "ImageUrl",
+                "PublishdAt",
+                "Number",
+                "Topics/English",
+                "Topics/Japanese",
+                "Tips/English",
+                "Tips/Japanese",
+            };
         #endregion
 
 
@@ -145,7 +169,8 @@ namespace KKTalking.Api.Domain.Instagram.Search
                     searchParameters: new SearchParameters
                     {
                         SearchMode = SearchMode.All,
-                        SearchFields = TargetFields,
+                        SearchFields = SearchFields,
+                        Select = SelectFields,
                         Top = top,
                     },
                     cancellationToken: cancellationToken
