@@ -1,11 +1,10 @@
 ﻿using System.Net.Http;
 using KKTalking.Api;
 using KKTalking.Api.Domain;
-using KKTalking.Api.Domain.Search;
+using KKTalking.Api.Domain.Instagram.Search;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 
 
 
@@ -81,7 +80,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddInstagram(appSettings.WebProxy);
             services.TryAddSingleton(new StorageAccountProvider(appSettings));
 
-            const string SearchServiceHttpClient = "KKTalking.Api.Domain.Search.SearchService.HttpClient";
+            const string SearchServiceHttpClient = "KKTalking.Api.Domain.Instagram.Search.SearchService.HttpClient";
             services.AddHttpClient(SearchServiceHttpClient);
             services.TryAddTransient(provider =>
             {

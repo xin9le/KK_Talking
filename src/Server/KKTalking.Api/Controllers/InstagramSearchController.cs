@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using KKTalking.Api.Domain.Search;
+using KKTalking.Api.Domain.Instagram.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
@@ -13,13 +13,13 @@ using Microsoft.Extensions.Logging;
 namespace KKTalking.Api.Controllers
 {
     /// <summary>
-    /// 検索関連の要求を処理します。
+    /// Instagram の投稿検索関連の要求を処理します。
     /// </summary>
-    public sealed class SearchController
+    public sealed class InstagramSearchController
     {
         #region プロパティ
         /// <summary>
-        /// 検索サービスを取得します。
+        /// Instagram の投稿検索サービスを取得します。
         /// </summary>
         private SearchService SearchService { get; }
 
@@ -37,7 +37,7 @@ namespace KKTalking.Api.Controllers
         /// </summary>
         /// <param name="searchService"></param>
         /// <param name="logger"></param>
-        public SearchController(SearchService searchService, ILogger<SearchController> logger)
+        public InstagramSearchController(SearchService searchService, ILogger<InstagramSearchController> logger)
         {
             this.SearchService = searchService;
             this.Logger = logger;

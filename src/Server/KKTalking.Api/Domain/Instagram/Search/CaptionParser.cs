@@ -5,7 +5,7 @@ using System.Text;
 
 
 
-namespace KKTalking.Api.Domain.Search
+namespace KKTalking.Api.Domain.Instagram.Search
 {
     /// <summary>
     /// キャプション情報を解析する機構を提供します。

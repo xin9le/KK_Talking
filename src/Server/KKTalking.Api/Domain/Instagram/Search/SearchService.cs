@@ -11,10 +11,10 @@ using Utf8Json;
 
 
 
-namespace KKTalking.Api.Domain.Search
+namespace KKTalking.Api.Domain.Instagram.Search
 {
     /// <summary>
-    /// 投稿の検索に関する処理を提供します。
+    /// Instagram の投稿検索に関する処理を提供します。
     /// </summary>
     public sealed class SearchService
     {
