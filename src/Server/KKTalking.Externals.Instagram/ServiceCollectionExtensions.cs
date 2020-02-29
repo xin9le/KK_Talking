@@ -20,15 +20,26 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddInstagram(this IServiceCollection services, WebProxyConfiguration? config = null)
         {
-            const string ScrapingServiceHttpClient = "KKTalking.Externals.Instagram.Services.ScrapingService.HttpClient";
-            var builder = services.AddHttpClient(ScrapingServiceHttpClient);
+            //--- 必要ならプロキシを生成
+            WebProxy? proxy = null;
             if (config != null)
             {
-                var proxy = new WebProxy(config.Host, config.Port);
+                proxy = new WebProxy(config.Host, config.Port);
                 if (config.Credentials != null)
                     proxy.Credentials = new NetworkCredential(config.Credentials.UserName, config.Credentials.Password);
-                builder.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler() { Proxy = proxy });
             }
+
+            //--- HttpClient を構成
+            const string ScrapingServiceHttpClient = "KKTalking.Externals.Instagram.Services.ScrapingService.HttpClient";
+            services
+                .AddHttpClient(ScrapingServiceHttpClient)
+                .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler()
+                {
+                    Proxy = proxy,
+                    AllowAutoRedirect = false,  // リダイレクトが発生したら検知する
+                });
+
+            //--- ScrapingService を構成
             services.TryAddSingleton(provider =>
             {
                 var factory = provider.GetRequiredService<IHttpClientFactory>();
