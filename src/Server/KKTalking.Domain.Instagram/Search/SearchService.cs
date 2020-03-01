@@ -46,16 +46,15 @@ namespace KKTalking.Domain.Instagram.Search
 
 
         /// <summary>
-        /// 検索対象フィールドを表します。
+        /// トピック検索の対象フィールドを表します。
         /// </summary>
-        private static string[] SearchFields { get; }
-            = new[]
-            {
-                "Topics/English",
-                "Topics/Japanese",
-                "Tips/English",
-                "Tips/Japanese",
-            };
+        private static string[] TopicSearchFields { get; } = new[] { "Topics/English", "Topics/Japanese" };
+
+
+        /// <summary>
+        /// Tips 検索の対象フィールドを表します。
+        /// </summary>
+        private static string[] TipsSearchFields { get; } = new[] { "Tips/English", "Tips/Japanese" };
 
 
         /// <summary>
@@ -189,26 +188,41 @@ namespace KKTalking.Domain.Instagram.Search
         {
             //--- 全文検索
             var indexClient = this.SearchClient.Indexes.GetClient(SearchIndexName);
-            var result
-                = await indexClient.Documents
-                .SearchAsync<SearchMetadata>
-                (
-                    searchText,
-                    searchParameters: new SearchParameters
-                    {
-                        SearchMode = SearchMode.All,
-                        SearchFields = SearchFields,
-                        Select = SelectFields,
-                        Top = top,
-                    },
-                    cancellationToken: cancellationToken
-                )
-                .ConfigureAwait(false);
+            var t1 = indexClient.Documents.SearchAsync<SearchMetadata>
+            (
+                searchText,
+                searchParameters: new SearchParameters
+                {
+                    SearchMode = SearchMode.All,
+                    SearchFields = TopicSearchFields,  // Topic だけで検索
+                    Select = SelectFields,
+                    Top = top,
+                },
+                cancellationToken: cancellationToken
+            );
+            var t2 = indexClient.Documents.SearchAsync<SearchMetadata>
+            (
+                searchText,
+                searchParameters: new SearchParameters
+                {
+                    SearchMode = SearchMode.All,
+                    SearchFields = TipsSearchFields,  // Tips だけで検索
+                    Select = SelectFields,
+                    Top = top,
+                },
+                cancellationToken: cancellationToken
+            );
+            var metadatas
+                = (await Task.WhenAll(t1, t2).ConfigureAwait(false))
+                .SelectMany(x => x.Results)
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.Document)
+                .Distinct(SearchMetadata.Comparer)  // Topic / Tips それぞれの検索結果から重複を削除
+                .ToArray();
 
             //--- 形式を調整
             var container = this.BlobClient.GetContainerReference(PostThumbnailContainerName);
             var thumbnailEndpoint = container.Uri.ToString();  // CDN 通すときはここを調整
-            var metadatas = result.Results.Select(x => x.Document).ToArray();
             return new SearchResult(thumbnailEndpoint, metadatas);
         }
 

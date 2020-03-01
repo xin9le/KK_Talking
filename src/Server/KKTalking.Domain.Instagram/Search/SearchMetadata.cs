@@ -90,5 +90,27 @@ namespace KKTalking.Domain.Instagram.Search
         }
         #endregion
 #pragma warning restore CS8618
+
+
+        #region IEqualityComparer
+        /// <summary>
+        /// 等値比較機能を取得します。
+        /// </summary>
+        public static IEqualityComparer<SearchMetadata> Comparer { get; } = new EqualityComparer();
+
+
+        /// <summary>
+        /// 等値比較機能を提供します。
+        /// </summary>
+        private sealed class EqualityComparer : IEqualityComparer<SearchMetadata>
+        {
+            public bool Equals(SearchMetadata x, SearchMetadata y)
+                => x.Number == y.Number;
+
+
+            public int GetHashCode(SearchMetadata obj)
+                => obj.Number.GetHashCode();
+        }
+        #endregion
     }
 }
