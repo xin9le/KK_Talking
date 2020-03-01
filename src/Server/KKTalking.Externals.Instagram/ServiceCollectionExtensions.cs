@@ -22,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             //--- 必要ならプロキシを生成
             WebProxy? proxy = null;
-            if (config != null)
+            if (config?.IsEnabled == true)
             {
                 proxy = new WebProxy(config.Host, config.Port);
                 if (config.Credentials != null)

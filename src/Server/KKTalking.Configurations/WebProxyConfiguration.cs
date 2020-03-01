@@ -8,6 +8,12 @@
         #region プロパティ
 #pragma warning disable CS8618
         /// <summary>
+        /// 有効化するかどうかを取得します。
+        /// </summary>
+        public bool IsEnabled { get; private set; }
+
+
+        /// <summary>
         /// ホストの End Point を取得します。
         /// </summary>
         public string Host { get; private set; }
