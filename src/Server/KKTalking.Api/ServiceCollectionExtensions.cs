@@ -1,11 +1,7 @@
-﻿using System.Net.Http;
-using KKTalking.Api.Domain;
-using KKTalking.Api.Domain.Instagram.Search;
-using KKTalking.Externals.Instagram;
-using Microsoft.Azure.Search;
+﻿using KKTalking.Api.Domain;
+using KKTalking.Domain.Instagram;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 
@@ -78,21 +74,8 @@ namespace KKTalking.Api
         /// <returns></returns>
         public static IServiceCollection AddDomainServices(this IServiceCollection services, AppSettings appSettings)
         {
-            services.AddInstagram(appSettings.WebProxy);
-            services.TryAddSingleton(new StorageAccountProvider(appSettings));
-
-            const string SearchServiceHttpClient = "KKTalking.Api.Domain.Instagram.Search.SearchService.HttpClient";
-            services.AddHttpClient(SearchServiceHttpClient);
-            services.TryAddTransient(provider =>
-            {
-                //--- Azure Cognitive Search のインスタンスを生成
-                var factory = provider.GetRequiredService<IHttpClientFactory>();
-                var httpClient = factory.CreateClient(SearchServiceHttpClient);
-                var config = provider.GetRequiredService<AppSettings>().CognitiveSearch;
-                var credentials = new SearchCredentials(config.ApiKey);
-                var serviceClient = new SearchServiceClient(credentials, httpClient, false) { SearchServiceName = config.ServiceName };
-                return ActivatorUtilities.CreateInstance<SearchService>(provider, serviceClient);
-            });
+            var storageAccount = new StorageAccountProvider(appSettings);
+            services.AddInstagramSearch(storageAccount.AzureWebJobs, appSettings.CognitiveSearch, appSettings.WebProxy);
             return services;
         }
     }

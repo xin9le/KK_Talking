@@ -13,7 +13,7 @@ using ValueTaskSupplement;
 
 
 
-namespace KKTalking.Api.Domain.Instagram.Search
+namespace KKTalking.Domain.Instagram.Search
 {
     /// <summary>
     /// Instagram の投稿検索に関する処理を提供します。
@@ -97,7 +97,8 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <summary>
         /// HTTP アクセスするための機能を取得します。
         /// </summary>
-        private HttpClient HttpClient { get; }
+        private HttpClient HttpClient
+            => this.SearchClient.HttpClient;  // これは OK
 
 
         /// <summary>
@@ -112,16 +113,14 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// インスタンスを生成します。
         /// </summary>
         /// <param name="scrapingService"></param>
-        /// <param name="accountProvider"></param>
+        /// <param name="blobClient"></param>
         /// <param name="searchClient"></param>
-        /// <param name="httpClient"></param>
         /// <param name="logger"></param>
-        public SearchService(ScrapingService scrapingService, StorageAccountProvider accountProvider, SearchServiceClient searchClient, HttpClient httpClient, ILogger<SearchService> logger)
+        public SearchService(ScrapingService scrapingService, CloudBlobClient blobClient, SearchServiceClient searchClient, ILogger<SearchService> logger)
         {
             this.ScrapingService = scrapingService;
-            this.BlobClient = accountProvider.AzureWebJobs.CreateCloudBlobClient();
+            this.BlobClient = blobClient;
             this.SearchClient = searchClient;
-            this.HttpClient = httpClient;
             this.Logger = logger;
         }
         #endregion

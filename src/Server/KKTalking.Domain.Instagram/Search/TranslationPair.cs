@@ -1,4 +1,4 @@
-﻿namespace KKTalking.Api.Domain.Instagram.Search
+﻿namespace KKTalking.Domain.Instagram.Search
 {
     /// <summary>
     /// 翻訳ペアを表します。

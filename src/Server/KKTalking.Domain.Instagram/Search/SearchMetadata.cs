@@ -4,7 +4,7 @@ using KKTalking.Externals.Instagram.Models;
 
 
 
-namespace KKTalking.Api.Domain.Instagram.Search
+namespace KKTalking.Domain.Instagram.Search
 {
     /// <summary>
     /// 検索用のメタデータを表します。

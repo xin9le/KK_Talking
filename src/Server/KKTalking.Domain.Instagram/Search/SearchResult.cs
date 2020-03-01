@@ -2,7 +2,7 @@
 
 
 
-namespace KKTalking.Api.Domain.Instagram.Search
+namespace KKTalking.Domain.Instagram.Search
 {
     /// <summary>
     /// 検索結果を表します。
