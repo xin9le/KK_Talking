@@ -20,12 +20,6 @@ namespace KKTalking.Api.Domain.Instagram.Search
 
 
         /// <summary>
-        /// 画像 URL を取得または設定します。
-        /// </summary>
-        public string ImageUrl { get; set; }
-
-
-        /// <summary>
         /// 投稿日時を取得または設定します。
         /// </summary>
         public DateTimeOffset PublishdAt { get; set; }
@@ -72,7 +66,6 @@ namespace KKTalking.Api.Domain.Instagram.Search
         internal SearchMetadata(PostSlim post, CaptionParseResult result)
         {
             this.ShortCode = post.ShortCode;
-            this.ImageUrl = post.ImageUrl;
             this.PublishdAt = post.PublishdAt;
             this.Number = result.Number;
             this.Topics = result.Topics;
@@ -89,7 +82,6 @@ namespace KKTalking.Api.Domain.Instagram.Search
         internal SearchMetadata(Post post, CaptionParseResult result)
         {
             this.ShortCode = post.ShortCode;
-            this.ImageUrl = post.Medias[0].ImageUrl;
             this.PublishdAt = post.PublishdAt;
             this.Number = result.Number;
             this.Topics = result.Topics;

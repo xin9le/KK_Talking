@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using KKTalking.Externals.Instagram.Services;
@@ -8,6 +9,7 @@ using Microsoft.Azure.Search.Models;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Logging;
 using Utf8Json;
+using ValueTaskSupplement;
 
 
 
@@ -29,6 +31,12 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// 検索メタデータを格納している Blob Storage のコンテナ名を表します。
         /// </summary>
         private const string SearchMetadataContainerName = "instagram-post-search-metadata";
+
+
+        /// <summary>
+        /// 投稿のサムネイル画像を格納している Blob Storage のコンテナ名を表します。
+        /// </summary>
+        private const string PostThumbnailContainerName = "instagram-post-thumbnail";
 
 
         /// <summary>
@@ -57,7 +65,6 @@ namespace KKTalking.Api.Domain.Instagram.Search
             = new[]
             {
                 "ShortCode",
-                "ImageUrl",
                 "PublishdAt",
                 "Number",
                 "Topics/English",
@@ -88,6 +95,12 @@ namespace KKTalking.Api.Domain.Instagram.Search
 
 
         /// <summary>
+        /// HTTP アクセスするための機能を取得します。
+        /// </summary>
+        private HttpClient HttpClient { get; }
+
+
+        /// <summary>
         /// ロガーを取得します。
         /// </summary>
         private ILogger Logger { get; }
@@ -101,12 +114,14 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <param name="scrapingService"></param>
         /// <param name="accountProvider"></param>
         /// <param name="searchClient"></param>
+        /// <param name="httpClient"></param>
         /// <param name="logger"></param>
-        public SearchService(ScrapingService scrapingService, StorageAccountProvider accountProvider, SearchServiceClient searchClient, ILogger<SearchService> logger)
+        public SearchService(ScrapingService scrapingService, StorageAccountProvider accountProvider, SearchServiceClient searchClient, HttpClient httpClient, ILogger<SearchService> logger)
         {
             this.ScrapingService = scrapingService;
             this.BlobClient = accountProvider.AzureWebJobs.CreateCloudBlobClient();
             this.SearchClient = searchClient;
+            this.HttpClient = httpClient;
             this.Logger = logger;
         }
         #endregion
@@ -128,7 +143,9 @@ namespace KKTalking.Api.Domain.Instagram.Search
                 {
                     var result = CaptionParser.Parse(x.Caption);
                     var metadata = new SearchMetadata(x, result);
-                    await this.UploadAsync(metadata, cancellationToken).ConfigureAwait(false);
+                    var t1 = this.CopyThumbnailAsync(x.ImageUrl, metadata.Number, cancellationToken);
+                    var t2 = this.UploadMetadataAsync(metadata, cancellationToken);
+                    await ValueTaskEx.WhenAll(t1, t2).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -157,7 +174,9 @@ namespace KKTalking.Api.Domain.Instagram.Search
 
             var result = CaptionParser.Parse(post.Caption);
             var metadata = new SearchMetadata(post, result);
-            await this.UploadAsync(metadata, cancellationToken).ConfigureAwait(false);
+            var t1 = this.CopyThumbnailAsync(post.Medias[0].ImageUrl, metadata.Number, cancellationToken);
+            var t2 = this.UploadMetadataAsync(metadata, cancellationToken);
+            await ValueTaskEx.WhenAll(t1, t2).ConfigureAwait(false);
             return metadata;
         }
 
@@ -169,8 +188,9 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <param name="top"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async ValueTask<SearchMetadata[]> SearchAsync(string searchText, int? top = default, CancellationToken cancellationToken = default)
+        public async ValueTask<SearchResult> SearchAsync(string searchText, int? top = default, CancellationToken cancellationToken = default)
         {
+            //--- 全文検索
             var indexClient = this.SearchClient.Indexes.GetClient(SearchIndexName);
             var result
                 = await indexClient.Documents
@@ -187,7 +207,12 @@ namespace KKTalking.Api.Domain.Instagram.Search
                     cancellationToken: cancellationToken
                 )
                 .ConfigureAwait(false);
-            return result.Results.Select(x => x.Document).ToArray();
+
+            //--- 形式を調整
+            var container = this.BlobClient.GetContainerReference(PostThumbnailContainerName);
+            var thumbnailEndpoint = container.Uri.ToString();  // CDN 通すときはここを調整
+            var metadatas = result.Results.Select(x => x.Document).ToArray();
+            return new SearchResult(thumbnailEndpoint, metadatas);
         }
 
 
@@ -198,14 +223,34 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <param name="metadata"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private ValueTask UploadAsync(SearchMetadata metadata, CancellationToken cancellationToken = default)
+        private ValueTask UploadMetadataAsync(SearchMetadata metadata, CancellationToken cancellationToken = default)
         {
             var fileName = $"KK{metadata.Number}.json";
             var json = JsonSerializer.Serialize(metadata);
             var container = this.BlobClient.GetContainerReference(SearchMetadataContainerName);
             var blob = container.GetBlockBlobReference(fileName);
-            var task = blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken);
-            return new ValueTask(task);
+            return blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken).AsValueTask();
+        }
+
+
+        /// <summary>
+        /// 指定されたサムネイル画像をコピーします。
+        /// </summary>
+        /// <param name="thumbnailUrl"></param>
+        /// <param name="number"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async ValueTask CopyThumbnailAsync(string thumbnailUrl, int number, CancellationToken cancellationToken = default)
+        {
+            //--- 取得
+            var response = await this.HttpClient.GetAsync(thumbnailUrl, cancellationToken).ConfigureAwait(false);
+            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+            //--- コピー
+            var fileName = $"KK{number}.jpg";
+            var container = this.BlobClient.GetContainerReference(PostThumbnailContainerName);
+            var blob = container.GetBlockBlobReference(fileName);
+            await blob.UploadFromStreamAsync(stream).ConfigureAwait(false);
         }
         #endregion
     }
