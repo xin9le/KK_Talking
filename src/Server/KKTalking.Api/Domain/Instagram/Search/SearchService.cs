@@ -26,6 +26,18 @@ namespace KKTalking.Api.Domain.Instagram.Search
 
 
         /// <summary>
+        /// 検索メタデータを格納している Blob Storage のコンテナ名を表します。
+        /// </summary>
+        private const string SearchMetadataContainerName = "instagram-post-search-metadata";
+
+
+        /// <summary>
+        /// 検索インデックス名を表します。
+        /// </summary>
+        private const string SearchIndexName = "instagram-post-index";
+
+
+        /// <summary>
         /// 検索対象フィールドを表します。
         /// </summary>
         private static string[] SearchFields { get; }
@@ -159,8 +171,7 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <returns></returns>
         public async ValueTask<SearchMetadata[]> SearchAsync(string searchText, int? top = default, CancellationToken cancellationToken = default)
         {
-            const string indexName = "instagram-post-index";
-            var indexClient = this.SearchClient.Indexes.GetClient(indexName);
+            var indexClient = this.SearchClient.Indexes.GetClient(SearchIndexName);
             var result
                 = await indexClient.Documents
                 .SearchAsync<SearchMetadata>
@@ -191,7 +202,7 @@ namespace KKTalking.Api.Domain.Instagram.Search
         {
             var fileName = $"KK{metadata.Number}.json";
             var json = JsonSerializer.Serialize(metadata);
-            var container = this.BlobClient.GetContainerReference("instagram-post-search-metadata");
+            var container = this.BlobClient.GetContainerReference(SearchMetadataContainerName);
             var blob = container.GetBlockBlobReference(fileName);
             var task = blob.UploadFromByteArrayAsync(json, 0, json.Length, cancellationToken);
             return new ValueTask(task);
