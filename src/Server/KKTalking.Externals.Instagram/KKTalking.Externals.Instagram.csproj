@@ -14,8 +14,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\KKTalking.Configurations\KKTalking.Configurations.csproj" />
-      <ProjectReference Include="..\KKTalking.Core\KKTalking.Core.csproj" />
+        <ProjectReference Include="..\KKTalking.Configurations\KKTalking.Configurations.csproj" />
+        <ProjectReference Include="..\KKTalking.Core\KKTalking.Core.csproj" />
     </ItemGroup>
 
 </Project>
