@@ -138,25 +138,34 @@ class KKSearch {
             const textBox = e.target[0];
             textBox.readOnly = true;
 
+            //--- 要素を削除
+            const container = $('#kk_searchResultContainer');
+            container.empty();
+            container.append(this.createSearchingElement());
+
             try {
                 //--- 検索
                 const textBox = $(e.target).find('input[type="text"]');
                 const keyword = encodeURIComponent(textBox.val());
                 const url = 'https://kktalking.azure-api.net/instagram/v1/search?q=' + keyword;
                 const result = await $.get(url);
-
-                //--- 要素を削除
-                const container = $('#kk_searchResultContainer');
                 container.empty();
 
                 //--- 要素を追加
-                for (const x of result.contents) {
-                    const element = this.createSearchResultElement(x, result.thumbnailEndpoint);
-                    container.append(element);
+                if (0 < result.contents.length) {
+                    for (const x of result.contents) {
+                        const element = this.createSearchResultElement(x, result.thumbnailEndpoint);
+                        container.append(element);
+                    }
+                }
+                else {
+                    container.append(this.createNoResultsElement());
                 }
             }
             catch (ex) {
                 console.error(ex);
+                container.empty();
+                container.append(this.createErrorElement());
             }
             finally {
                 //--- 元に戻す
@@ -208,6 +217,46 @@ class KKSearch {
                 </div>
             </div>`;
         return item;
+    }
+
+
+    static createNoResultsElement() {
+        const element =
+            `<div class="Igw0E rBNOH eGOV_ _4EzTm">
+                <div class="Igw0E rBNOH eGOV_ _4EzTm oaeHW K7QFQ _6wM3Z sn5rQ" style="max-width: 350px;">
+                    <div class="Igw0E IwRSH eGOV_ _4EzTm FBi-h kEKum">
+                        <h1 class="_7UhW9 fKFbl yUEEX KV-D4 uL8Hv l4b0S">No results found.</h1>
+                    </div>
+                </div>
+            </div>`;
+        return element;
+    }
+
+
+    static createErrorElement() {
+        const element =
+            `<div class="Igw0E rBNOH eGOV_ _4EzTm">
+                <div class="Igw0E rBNOH eGOV_ _4EzTm oaeHW K7QFQ _6wM3Z sn5rQ" style="max-width: 350px;">
+                    <div class="Igw0E IwRSH eGOV_ _4EzTm FBi-h kEKum">
+                        <h1 class="_7UhW9 fKFbl yUEEX KV-D4 uL8Hv l4b0S">Error occured.</h1>
+                    </div>
+                </div>
+            </div>`;
+        return element;
+    }
+
+
+    static createSearchingElement() {
+        const element =
+            `<div class="Igw0E rBNOH eGOV_ _4EzTm">
+                <div class="Igw0E rBNOH eGOV_ _4EzTm oaeHW K7QFQ _6wM3Z sn5rQ" style="max-width: 350px;">
+                    <progress></progress>
+                    <div class="Igw0E IwRSH eGOV_ _4EzTm FBi-h kEKum">
+                        <h1 class="_7UhW9 fKFbl yUEEX KV-D4 uL8Hv l4b0S">Now searching...</h1>
+                    </div>
+                </div>
+            </div>`
+        return element;
     }
 }
 
