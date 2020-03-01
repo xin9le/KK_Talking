@@ -150,8 +150,8 @@ class KKSearch {
                 container.empty();
 
                 //--- 要素を追加
-                for (const x of result) {
-                    const element = this.createSearchResultElement(x);
+                for (const x of result.contents) {
+                    const element = this.createSearchResultElement(x, result.thumbnailEndpoint);
                     container.append(element);
                 }
             }
@@ -166,7 +166,7 @@ class KKSearch {
     }
 
 
-    static createSearchResultElement(metadata) {
+    static createSearchResultElement(metadata, thumbnailEndpoint) {
         //--- Topics
         let topics = '';
         if (0 < metadata.topics.length) {
@@ -196,7 +196,7 @@ class KKSearch {
             `<div class="kk_itemBox">
                 <div class="kk_imageBox">
                     <a href="https://www.instagram.com/p/${metadata.shortCode}" target="_blank">
-                        <img src="${metadata.imageUrl}" />
+                        <img src="${thumbnailEndpoint}/KK${metadata.number}.jpg" />
                     </a>
                 </div>
                 <div class="kk_infoBox">
