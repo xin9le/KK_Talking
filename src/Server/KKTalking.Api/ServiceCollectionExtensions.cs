@@ -1,4 +1,4 @@
-﻿using KKTalking.Api.Domain;
+﻿using KKTalking.Api.Configurations;
 using KKTalking.Domain.Instagram;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

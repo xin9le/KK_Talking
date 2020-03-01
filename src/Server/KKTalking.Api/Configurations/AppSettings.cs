@@ -2,7 +2,7 @@
 
 
 
-namespace KKTalking.Api
+namespace KKTalking.Api.Configurations
 {
     /// <summary>
     /// アプリケーション設定を表します。

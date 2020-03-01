@@ -2,7 +2,7 @@
 
 
 
-namespace KKTalking.Api.Domain
+namespace KKTalking.Api.Configurations
 {
     /// <summary>
     /// ストレージアカウントの取得機能を提供します。
