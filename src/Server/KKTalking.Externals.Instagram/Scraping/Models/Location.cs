@@ -2,7 +2,7 @@
 
 
 
-namespace KKTalking.Externals.Instagram.Models
+namespace KKTalking.Externals.Instagram.Scraping.Models
 {
     /// <summary>
     /// 位置情報を表します。

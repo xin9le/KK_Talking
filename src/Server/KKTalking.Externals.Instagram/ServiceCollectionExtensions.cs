@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using KKTalking.Configurations;
-using KKTalking.Externals.Instagram.Services;
+using KKTalking.Externals.Instagram.Scraping;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

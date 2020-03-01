@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using KKTalking.Externals.Instagram.Services;
+using KKTalking.Externals.Instagram.Scraping;
 using Microsoft.Azure.Search;
 using Microsoft.Azure.Search.Models;
 using Microsoft.Azure.Storage.Blob;

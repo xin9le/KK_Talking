@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using KKTalking.Externals.Instagram.Models;
+using KKTalking.Externals.Instagram.Scraping.Models;
 
 
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 
-namespace KKTalking.Externals.Instagram.Models
+namespace KKTalking.Externals.Instagram.Scraping.Models
 {
     /// <summary>
     /// オーナー情報を表します。

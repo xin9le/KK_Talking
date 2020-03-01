@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using KKTalking.Externals.Instagram.Models;
+using KKTalking.Externals.Instagram.Scraping.Models;
 using KKTalking.Net.Http;
 using Utf8Json;
 
 
 
-namespace KKTalking.Externals.Instagram.Services
+namespace KKTalking.Externals.Instagram.Scraping
 {
     /// <summary>
     /// Instagram のサイトをスクレイピングする機能を提供します。

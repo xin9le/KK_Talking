@@ -1,4 +1,4 @@
-﻿namespace KKTalking.Externals.Instagram.Models
+﻿namespace KKTalking.Externals.Instagram.Scraping.Models
 {
     /// <summary>
     /// サイズを表します。
