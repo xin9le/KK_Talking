@@ -2,11 +2,12 @@
 using System.Net.Http;
 using KKTalking.Configurations;
 using KKTalking.Externals.Instagram.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace KKTalking.Externals.Instagram
 {
     /// <summary>
     /// <see cref="IServiceCollection"/> の拡張機能を提供します。

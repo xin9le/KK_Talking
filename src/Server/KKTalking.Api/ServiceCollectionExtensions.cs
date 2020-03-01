@@ -1,14 +1,15 @@
 ﻿using System.Net.Http;
-using KKTalking.Api;
 using KKTalking.Api.Domain;
 using KKTalking.Api.Domain.Instagram.Search;
+using KKTalking.Externals.Instagram;
 using Microsoft.Azure.Search;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace KKTalking.Api
 {
     /// <summary>
     /// <see cref="IServiceCollection"/> の拡張機能を提供します。
