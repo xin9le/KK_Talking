@@ -134,16 +134,14 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// <returns></returns>
         public async ValueTask BuildAsync(CancellationToken cancellationToken = default)
         {
-            const bool recursive = false;
-            var posts = await this.ScrapingService.ExtractPostSlimsAsync(AccountName, recursive, cancellationToken).ConfigureAwait(false);
-
+            var posts = await this.ScrapingService.ExtractPostSlimsAsync(AccountName, recursive: false, cancellationToken).ConfigureAwait(false);
             foreach (var x in posts)
             {
                 try
                 {
                     var result = CaptionParser.Parse(x.Caption);
                     var metadata = new SearchMetadata(x, result);
-                    var t1 = this.CopyThumbnailAsync(x.ImageUrl, metadata.Number, cancellationToken);
+                    var t1 = this.CopyThumbnailAsync(x.ImageUrl, metadata.Number, overwrite: false, cancellationToken);
                     var t2 = this.UploadMetadataAsync(metadata, cancellationToken);
                     await ValueTaskEx.WhenAll(t1, t2).ConfigureAwait(false);
                 }
@@ -174,7 +172,7 @@ namespace KKTalking.Api.Domain.Instagram.Search
 
             var result = CaptionParser.Parse(post.Caption);
             var metadata = new SearchMetadata(post, result);
-            var t1 = this.CopyThumbnailAsync(post.Medias[0].ImageUrl, metadata.Number, cancellationToken);
+            var t1 = this.CopyThumbnailAsync(post.Medias[0].ImageUrl, metadata.Number, overwrite: true, cancellationToken);
             var t2 = this.UploadMetadataAsync(metadata, cancellationToken);
             await ValueTaskEx.WhenAll(t1, t2).ConfigureAwait(false);
             return metadata;
@@ -238,19 +236,22 @@ namespace KKTalking.Api.Domain.Instagram.Search
         /// </summary>
         /// <param name="thumbnailUrl"></param>
         /// <param name="number"></param>
+        /// <param name="overwrite"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async ValueTask CopyThumbnailAsync(string thumbnailUrl, int number, CancellationToken cancellationToken = default)
+        private async ValueTask CopyThumbnailAsync(string thumbnailUrl, int number, bool overwrite = false, CancellationToken cancellationToken = default)
         {
-            //--- 取得
-            var response = await this.HttpClient.GetAsync(thumbnailUrl, cancellationToken).ConfigureAwait(false);
-            var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-
-            //--- コピー
             var fileName = $"KK{number}.jpg";
             var container = this.BlobClient.GetContainerReference(PostThumbnailContainerName);
             var blob = container.GetBlockBlobReference(fileName);
-            await blob.UploadFromStreamAsync(stream).ConfigureAwait(false);
+            var exists = await blob.ExistsAsync(cancellationToken).ConfigureAwait(false);
+            if (!exists || overwrite)
+            {
+                //--- コピー
+                var response = await this.HttpClient.GetAsync(thumbnailUrl, cancellationToken).ConfigureAwait(false);
+                var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                await blob.UploadFromStreamAsync(stream).ConfigureAwait(false);
+            }
         }
         #endregion
     }
