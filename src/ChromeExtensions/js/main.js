@@ -135,10 +135,8 @@ class KKSearch {
         $('.kk_searchBox form').on('submit', async e => {
             //--- submit を無効化
             e.preventDefault();
-
-            //--- 検索ボックスを無効化
-            const textBox = e.target[0];
-            textBox.readOnly = true;
+            const button = $('.kk_searchBox input[type="submit"]');
+            button.prop("disabled", true);
 
             //--- 要素を削除
             const container = $('#kk_searchResultContainer');
@@ -171,7 +169,7 @@ class KKSearch {
             }
             finally {
                 //--- 元に戻す
-                textBox.readOnly = false;
+                button.prop("disabled", false);
             }
         });
     }
