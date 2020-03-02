@@ -133,8 +133,16 @@ class KKSearch {
 
     static attachSearchBoxEvent() {
         $('.kk_searchBox form').on('submit', async e => {
-            //--- submit を無効化
+            //--- submit 処理をキャンセル
             e.preventDefault();
+
+            //--- 入力がなければ無視
+            const textBox = $(e.target).find('input[type="text"]');
+            const keyword = textBox.val().trim();
+            if (keyword === null || keyword === '')
+                return;
+
+            //--- 連打防止
             const button = $('.kk_searchBox input[type="submit"]');
             button.prop("disabled", true);
 
@@ -145,9 +153,8 @@ class KKSearch {
 
             try {
                 //--- 検索
-                const textBox = $(e.target).find('input[type="text"]');
-                const keyword = encodeURIComponent(textBox.val());
-                const url = 'https://kktalking.azure-api.net/instagram/v1/search?q=' + keyword;
+                const encodedKeyword = encodeURIComponent(keyword);
+                const url = 'https://kktalking.azure-api.net/instagram/v1/search?q=' + encodedKeyword;
                 const result = await $.get(url);
                 container.empty();
 
