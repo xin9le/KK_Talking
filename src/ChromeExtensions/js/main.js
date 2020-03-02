@@ -97,6 +97,7 @@ class KKSearch {
                 <div class="kk_searchBox">
                     <form>
                         <input class="XTCLo x3qfX" type="text" placeholder="Input search keyword here.">
+                        <input type="submit" class="sqdOP L3NKy y3zKF">
                     </form>
                 </div>
                 <div id="kk_searchResultContainer"></div>

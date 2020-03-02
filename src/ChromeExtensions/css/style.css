@@ -8,8 +8,14 @@
 }
 
 
-.kk_searchBox input {
-    width: 50%;
+.kk_searchBox input[type="text"] {
+    width: 30%;
+    padding-left: 10px;
+}
+
+
+.kk_searchBox input[type="submit"] {
+    display: initial;
 }
 
 
