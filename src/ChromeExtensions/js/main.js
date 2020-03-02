@@ -22,6 +22,7 @@ class InstagramVideo {
             this.findElements(parent, 'img._8jZFn').hide();
             this.findElements(parent, 'div.PyenC').hide();
             this.findElements(parent, 'div.fXIG0').hide();
+            this.findElements(parent, 'div.JSZAJ').hide();
             console.log('Enable post video control.');
         }
     }
