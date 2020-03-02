@@ -215,7 +215,6 @@ namespace KKTalking.Domain.Instagram.Search
             var metadatas
                 = (await Task.WhenAll(t1, t2).ConfigureAwait(false))
                 .SelectMany(x => x.Results)
-                .OrderByDescending(x => x.Score)
                 .Select(x => x.Document)
                 .Distinct(SearchMetadata.Comparer)  // Topic / Tips それぞれの検索結果から重複を削除
                 .ToArray();
