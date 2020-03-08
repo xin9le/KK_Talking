@@ -16,9 +16,14 @@ class InstagramVideo {
 
 
     static enablePostsVideoControl(parent) {
-        const videos = this.findElements(parent, 'video.tWeCl');
-        if (videos.length > 0) {
-            videos.prop('controls', true);
+        const rawVideos = this.findElements(parent, 'video.tWeCl');
+        const cloneVideos = this.findElements(parent, 'video.kk_video');
+        if (rawVideos.length > 0 && cloneVideos.length === 0) {  // クローンがひとつも登録されていないときだけ
+            rawVideos.prop('controls', true);
+            const clone = $(rawVideos.clone(false)[0]);  // ひとつだけ
+            clone.removeClass('tWeCl').addClass('kk_video');            
+            clone.insertAfter(rawVideos);
+            rawVideos.remove();
             this.findElements(parent, 'img._8jZFn').hide();
             this.findElements(parent, 'div.PyenC').hide();
             this.findElements(parent, 'div.fXIG0').hide();
