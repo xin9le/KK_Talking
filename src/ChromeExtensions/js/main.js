@@ -60,8 +60,11 @@ class KKSearch {
 
 
     static isAvailable(url) {
+        if (url === null)
+            return false;
+
         const targetUrl = 'https://www.instagram.com/kk_talking';
-        return url?.toLowerCase()?.startsWith(targetUrl) ?? false;
+        return url.toLowerCase().startsWith(targetUrl);
     }
 
 
