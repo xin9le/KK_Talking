@@ -3,40 +3,61 @@ class InstagramVideo {
 
 
     static enableControl(document) {
-        const observer = new MutationObserver(mutations => {
-            for (const x of mutations) {
-                if (x.type !== 'childList')
-                    continue;
-                this.enablePostsVideoControl(null);
-                this.enableHighlightsVideoControl(null);
-            }
+        const observer = new MutationObserver(() => {
+            this.enablePostsVideoControl();
+            this.enableHighlightsVideoControl();
         });
         observer.observe(document, { childList: true, subtree: true });
     }
 
 
-    static enablePostsVideoControl(parent) {
-        const rawVideos = this.findElements(parent, 'video.tWeCl');
-        const cloneVideos = this.findElements(parent, 'video.kk_video');
-        if (rawVideos.length > 0 && cloneVideos.length === 0) {  // クローンがひとつも登録されていないときだけ
-            rawVideos.prop('controls', true);
-            const clone = $(rawVideos.clone(false)[0]);  // ひとつだけ
-            clone.removeClass('tWeCl').addClass('kk_video');            
-            clone.insertAfter(rawVideos);
-            rawVideos.remove();
-            this.findElements(parent, 'img._8jZFn').hide();
-            this.findElements(parent, 'div.PyenC').hide();
-            this.findElements(parent, 'div.fXIG0').hide();
-            this.findElements(parent, 'div.JSZAJ').hide();
+    static enablePostsVideoControl() {
+        for (const x of this.findElements(null, 'video.tWeCl'))
+        {
+            const video = $(x);
+            const li = video.parents('li.Ckrof');  // Carousel Item
+
+            //--- クローン動画を生成していない場合のみ
+            if (this.findElements(li, 'video.kk_video').length === 0)
+            {
+                const clone = video.clone(false);  // イベントの関連付けを殺したクローンを生成
+                clone.removeClass('tWeCl').addClass('kk_video');  // 目印にするために class を変更
+                clone.prop('controls', true);  // 動画コントロールを有効化
+                clone.insertAfter(video);  // DOM に追加
+            }
+            this.findElements(li, 'img._8jZFn').hide();  // 上に載ってる画像を非表示
+            this.findElements(li, 'div.PyenC').hide();  // 再生ボタンを非表示
+            this.findElements(li, 'div.fXIG0').hide();  // 管理ボタンを非表示
+            video.remove();  // 動画本体を DOM から削除
             console.log('Enable post video control.');
+        }
+        this.findElements(null, 'div.JSZAJ').hide();  // Carousel Slider を非表示
+
+        //--- Carousel Item を切り替えたときに動画を停止
+        {
+            const stopPostVideos = () =>
+            {
+                for (const x of $('video.kk_video'))
+                {
+                    x.pause();
+                    x.currentTime = 0;
+                }               
+            };
+            const container = $('div.EcJQs');
+            const leftButton = this.findElements(container, 'button.POSa_');
+            const rightButton = this.findElements(container, 'button._6CZji');
+            leftButton.off('click');
+            leftButton.on('click', () => stopPostVideos());
+            rightButton.off('click');
+            rightButton.on('click', () => stopPostVideos());
         }
     }
 
 
-    static enableHighlightsVideoControl(parent) {
-        const videos = this.findElements(parent, 'video.y-yJ5');
+    static enableHighlightsVideoControl() {
+        const videos = this.findElements(null, 'video.y-yJ5');
         if (videos.length > 0) {
-            this.findElements(parent, 'div.yxA_V').css('pointer-events', 'auto');
+            this.findElements(null, 'div.yxA_V').css('pointer-events', 'auto');
             videos.prop('autoplay', false);
             videos.prop('controls', true);
             videos.removeAttr('playsinline');
