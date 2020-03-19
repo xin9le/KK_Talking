@@ -1,2 +1,3 @@
 # KK_Talking
-Supports you to enjoy KK Talking more comfortably.
+
+Allows you to enjoy KK Talking comfortably.
