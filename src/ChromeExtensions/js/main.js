@@ -15,19 +15,19 @@ class InstagramVideo {
         for (const x of this.findElements(null, 'video.tWeCl'))
         {
             const video = $(x);
-            const li = video.parents('li.Ckrof');  // Carousel Item
+            const container = video.parents('div.B1JlO.OAXCp');  // Video Container
 
             //--- クローン動画を生成していない場合のみ
-            if (this.findElements(li, 'video.kk_video').length === 0)
+            if (this.findElements(container, 'video.kk_video').length === 0)
             {
                 const clone = video.clone(false);  // イベントの関連付けを殺したクローンを生成
                 clone.removeClass('tWeCl').addClass('kk_video');  // 目印にするために class を変更
                 clone.prop('controls', true);  // 動画コントロールを有効化
                 clone.insertAfter(video);  // DOM に追加
             }
-            this.findElements(li, 'img._8jZFn').hide();  // 上に載ってる画像を非表示
-            this.findElements(li, 'div.PyenC').hide();  // 再生ボタンを非表示
-            this.findElements(li, 'div.fXIG0').hide();  // 管理ボタンを非表示
+            this.findElements(container, 'img._8jZFn').hide();  // 上に載ってる画像を非表示
+            this.findElements(container, 'div.PyenC').hide();  // 再生ボタンを非表示
+            this.findElements(container, 'div.fXIG0').hide();  // 管理ボタンを非表示
             video.remove();  // 動画本体を DOM から削除
             console.log('Enable post video control.');
         }
